@@ -3,21 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rosco Extremadura & Cultura</title>
+    <title>Rosco & Lógica 1%</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="game-container">
+    <div id="login-screen">
+        <h2>🔒 Acceso Privado</h2>
+        <input type="password" id="password-input" placeholder="Contraseña..." autocomplete="off">
+        <button id="login-btn">Entrar</button>
+        <p id="login-error">Contraseña incorrecta</p>
+    </div>
+
+    <div id="main-menu" class="hidden">
+        <h1>Selecciona el Reto</h1>
+        <div class="menu-buttons">
+            <button id="btn-mode-rosco" class="menu-btn rosco-style">
+                <span class="icon">🔵</span> El Rosco
+            </button>
+            <button id="btn-mode-logic" class="menu-btn logic-style">
+                <span class="icon">🧠</span> El 1% (Lógica)
+            </button>
+        </div>
+        <p class="record-info">Récord Rosco: <span id="menu-record">0</span></p>
+    </div>
+
+    <div id="rosco-game" class="game-container hidden">
+        <button class="back-btn" onclick="goToMenu()">⬅ Menú</button>
         <div class="rosco-container">
-            <ul class="circle" id="circle">
-                </ul>
+            <ul class="circle" id="circle"></ul>
             
             <div class="center-panel">
                 <div id="welcome-screen">
                     <h1>Rosco Quiz</h1>
-                    <p>Cultura General y Extremadura</p>
-                    <p>Récord Actual: <span id="high-score">0</span></p>
+                    <p>Cultura y Extremadura</p>
                     <button id="start-btn" class="btn-start">Jugar</button>
                 </div>
 
@@ -25,9 +44,7 @@
                     <div class="timer-box">⏳ <span id="timer">180</span>s</div>
                     <h2 id="current-letter-display">A</h2>
                     <p id="definition-text" class="definition">Definición...</p>
-                    
                     <input type="text" id="user-answer" placeholder="Tu respuesta..." autocomplete="off">
-                    
                     <div class="controls">
                         <button id="pasapalabra-btn" class="btn-pasa">Pasapalabra</button>
                         <button id="check-btn" class="btn-check">Enviar</button>
@@ -38,9 +55,28 @@
                     <h2>¡Tiempo Agotado!</h2>
                     <p>Aciertos: <span id="score-correct">0</span></p>
                     <p>Fallos: <span id="score-wrong">0</span></p>
-                    <button id="new-game-btn" class="btn-start">Nuevo Rosco</button>
+                    <button id="new-game-btn" class="btn-start">Siguiente Rosco</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="riddle-game" class="game-container hidden">
+        <button class="back-btn" onclick="goToMenu()">⬅ Menú</button>
+        <div class="logic-container">
+            <h2 class="logic-title">Pregunta del 1%</h2>
+            
+            <div id="logic-card" class="logic-card">
+                <p id="riddle-question">Pregunta...</p>
+                <div id="riddle-image-container"></div> </div>
+
+            <div class="logic-controls">
+                <input type="text" id="riddle-answer" placeholder="Respuesta lógica..." autocomplete="off">
+                <button id="riddle-check-btn" class="btn-logic">Comprobar</button>
+                <button id="riddle-giveup-btn" class="btn-giveup">Ver Solución</button>
+            </div>
+
+            <p id="logic-feedback" class="hidden"></p>
         </div>
     </div>
 
