@@ -10,7 +10,7 @@
 
     <div id="login-screen">
         <h2>🔒 Acceso Privado</h2>
-        <input type="password" id="password-input" placeholder="Contraseña..." autocomplete="on">
+        <input type="password" id="password-input" placeholder="Contraseña..." autocomplete="off">
         <button id="login-btn">Entrar</button>
         <p id="login-error">Contraseña incorrecta</p>
     </div>
@@ -47,39 +47,4 @@
                     <input type="text" id="user-answer" placeholder="Tu respuesta..." autocomplete="off">
                     <div class="controls">
                         <button id="pasapalabra-btn" class="btn-pasa">Pasapalabra</button>
-                        <button id="check-btn" class="btn-check">Enviar</button>
-                    </div>
-                </div>
-
-                <div id="end-screen" class="hidden">
-                    <h2>¡Tiempo Agotado!</h2>
-                    <p>Aciertos: <span id="score-correct">0</span></p>
-                    <p>Fallos: <span id="score-wrong">0</span></p>
-                    <button id="new-game-btn" class="btn-start">Siguiente Rosco</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="riddle-game" class="game-container hidden">
-        <button class="back-btn" onclick="goToMenu()">⬅ Menú</button>
-        <div class="logic-container">
-            <h2 class="logic-title">Pregunta del 1%</h2>
-            
-            <div id="logic-card" class="logic-card">
-                <p id="riddle-question">Pregunta...</p>
-                <div id="riddle-image-container"></div> </div>
-
-            <div class="logic-controls">
-                <input type="text" id="riddle-answer" placeholder="Respuesta lógica..." autocomplete="off">
-                <button id="riddle-check-btn" class="btn-logic">Comprobar</button>
-                <button id="riddle-giveup-btn" class="btn-giveup">Ver Solución</button>
-            </div>
-
-            <p id="logic-feedback" class="hidden"></p>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+                        <button
