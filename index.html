@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gran Rosco & Lógica Final</title>
+    <title>Gran Rosco (Nivel Medio-Alto) & Lógica</title>
     <style>
         /* =========================================
            RESET Y BASE
@@ -193,7 +193,7 @@
 
     <div id="main-menu">
         <h1>🏆 GRAN CONCURSO</h1>
-        <p style="color: #ccc;">Edición Especial</p>
+        <p style="color: #ccc;">Nivel: Experto</p>
         <div class="menu-buttons">
             <button id="btn-mode-rosco" class="menu-btn rosco-style">
                 <span class="icon">🔵</span> El Rosco
@@ -213,7 +213,7 @@
             <div class="center-panel">
                 <div id="welcome-screen">
                     <h2 style="color: #ffcc00; margin-bottom: 10px;">Rosco Quiz</h2>
-                    <p style="margin-bottom: 20px;">Cultura y Extremadura</p>
+                    <p style="margin-bottom: 20px;">Cultura General (Difícil)</p>
                     <button id="start-btn" class="btn-start">¡EMPEZAR!</button>
                 </div>
 
@@ -302,54 +302,82 @@
         }
 
         // ==========================================
-        // 2. JUEGO: EL 1% (LÓGICA - AMPLIADO)
+        // 2. JUEGO: EL 1% (LÓGICA)
         // ==========================================
-        const riddlesPool = [
-            { question: "J + A = 61\nS + O = 61\nM + A = 61\n\nEntonces...\nF + M = ¿?\n(Piensa en calendarios)", answers: ["59", "cincuenta y nueve"], explanation: "Iniciales de los meses + días.\nF (Febrero 28) + M (Marzo 31) = 59." },
-            { question: "Secuencia lógica:\nU, D, T, C, C, S, S, O, ...\n¿Qué sigue?", answers: ["n", "nueve"], explanation: "Iniciales de los números: Uno, Dos, Tres... Sigue N (Nueve)." },
-            { question: "11 + 2 = 1\n9 + 5 = 2\n\n¿10 + 4 = ?", answers: ["2", "dos"], explanation: "Horas del reloj. 10 + 4 horas = Las 2." },
-            { question: "Divide 30 por 0.5 y suma 10.", answers: ["70", "setenta"], explanation: "30 / 0.5 = 60. + 10 = 70." },
-            { question: "¿Cuántos nueves hay del 1 al 100?", answers: ["20", "veinte"], explanation: "9, 19, 29... 90, 91... 99 (son dos). Total 20." },
-            { question: "Adelantas al segundo en una carrera.\n¿En qué puesto vas?", answers: ["segundo", "2", "2º"], explanation: "Ocupas su lugar, eres el segundo." },
-            { question: "Padre de Ana tiene 5 hijas: Nana, Nene, Nini, Nono...\n¿La quinta?", answers: ["ana"], explanation: "El padre de ANA." },
-            { question: "Tiene ciudades sin casas, ríos sin agua y montes sin árboles.", answers: ["mapa", "un mapa"], explanation: "Un mapa." },
-            { question: "Habitación oscura. Tienes vela, lámpara de gas y leña.\n¿Qué enciendes primero?", answers: ["cerilla", "la cerilla", "fuego"], explanation: "La cerilla." },
-            { question: "Hay que romperlo para usarlo.", answers: ["huevo", "un huevo"], explanation: "El huevo." },
-            { question: "Alto de joven, bajo de viejo. Brillo y lloro.", answers: ["vela", "una vela"], explanation: "Una vela." },
-            { question: "Se moja mientras seca.", answers: ["toalla", "una toalla"], explanation: "La toalla." },
-            { question: "Tiene llaves pero no abre puertas.", answers: ["teclado", "piano", "un teclado"], explanation: "Un teclado o un piano." },
-            { question: "Si lo compartes, deja de serlo.", answers: ["secreto", "un secreto"], explanation: "Un secreto." },
-            { question: "Si dices mi nombre, me rompo.", answers: ["silencio", "el silencio"], explanation: "El silencio." },
-            { question: "Conductor de bus. Bajan 3, suben 2... ¿Nombre del conductor?", answers: ["tu", "yo", "mi nombre"], explanation: "TÚ eres el conductor." },
-            { question: "Oso camina 1km Sur, 1km Este, 1km Norte. Vuelve al inicio.\n¿Color?", answers: ["blanco"], explanation: "Polo Norte. Oso polar." },
-            { question: "Más grande cuanto más le quitas.", answers: ["agujero", "hoyo"], explanation: "Un agujero." },
-            { question: "Tienes 5 manzanas, quitas 2.\n¿Cuántas tienes?", answers: ["2", "dos"], explanation: "Tienes las 2 que has quitado." },
-            { question: "Palabra mal escrita en todos los diccionarios.", answers: ["mal", "incorrectamente"], explanation: "La palabra 'incorrectamente'." },
-            { question: "Tren eléctrico al norte, viento al oeste.\n¿Hacia dónde va el humo?", answers: ["ninguno", "no tiene"], explanation: "Eléctrico = no humo." },
-            { question: "Hombre sin paraguas bajo lluvia no se moja el pelo.", answers: ["calvo"], explanation: "Es calvo." },
-            { question: "Tiene cuello pero no cabeza.", answers: ["botella", "camisa"], explanation: "Botella o camisa." },
-            { question: "Adelantas al último en una carrera.\n¿Puesto?", answers: ["imposible"], explanation: "No puedes adelantar al último (si vas detrás, tú eres el último)." },
-            { question: "Baja pero nunca sube.", answers: ["lluvia", "la lluvia"], explanation: "La lluvia." },
-            { question: "De 10 ovejas, se mueren todas menos 9.\n¿Cuántas quedan?", answers: ["9", "nueve"], explanation: "Las 9 vivas." },
-            { question: "Solo un ojo pero no ve.", answers: ["aguja", "una aguja"], explanation: "La aguja." },
-            { question: "Sostienes en mano derecha, nunca en la izquierda.", answers: ["codo izquierdo", "mano izquierda"], explanation: "Tu mano/codo izquierdo." },
-            { question: "¿Qué mes tiene 28 días?", answers: ["todos", "12"], explanation: "Todos los meses." },
-            // NUEVOS ACERTIJOS AÑADIDOS
-            { question: "Es tuyo, pero todos lo usan más que tú.", answers: ["nombre", "tu nombre"], explanation: "Tu nombre." },
-            { question: "París empieza por P y termina por T. ¿Cierto o Falso?", answers: ["cierto", "verdad", "si"], explanation: "La palabra 'París' empieza por P. La palabra 'Termina' empieza por T." },
-            { question: "¿Qué animal anda con 4 patas por la mañana, 2 al mediodía y 3 por la noche?", answers: ["hombre", "ser humano", "humano"], explanation: "El ser humano (gatea de bebé, camina de adulto, usa bastón de viejo)." },
-            { question: "Tengo agujas pero no sé coser. Tengo números pero no sé leer.", answers: ["reloj", "el reloj"], explanation: "El reloj." },
-            { question: "Si me nombras, desaparezco. ¿Qué soy?", answers: ["silencio", "el silencio"], explanation: "El silencio." },
-            { question: "¿Qué sube pero nunca baja?", answers: ["edad", "la edad", "altura"], explanation: "La edad." },
-            { question: "Entro duro y grande, y salgo blando y pequeño. ¿Qué soy?", answers: ["chicle", "un chicle"], explanation: "Un chicle." },
-            { question: "Tiene dientes pero no muerde.", answers: ["peine", "ajo", "cremallera"], explanation: "Un peine o un ajo." },
-            { question: "Hijo de mi padre y de mi madre, y no es mi hermano.", answers: ["yo", "soy yo"], explanation: "Soy yo." },
-            { question: "¿Qué pesa más, un kilo de hierro o un kilo de paja?", answers: ["igual", "lo mismo", "pesan igual"], explanation: "Pesan lo mismo: un kilo." },
-            { question: "Un gallo pone un huevo en la cima de un tejado. ¿Hacia dónde cae?", answers: ["ningun sitio", "no ponen huevos", "gallos no ponen huevos"], explanation: "Los gallos no ponen huevos." },
-            { question: "Dos padres y dos hijos en un coche. Solo van 3 personas. ¿Cómo?", answers: ["abuelo", "abuelo padre hijo"], explanation: "Son: Abuelo, Padre e Hijo (El padre es hijo del abuelo)." },
-            { question: "¿Qué se rompe si lo tiras al suelo, pero no si lo tiras al agua?", answers: ["papel", "un papel"], explanation: "El papel (flota o se moja, pero no se rompe por el golpe)." },
-            { question: "Siempre estoy en medio del MAR.", answers: ["a", "letra a"], explanation: "La letra A." }
-        ];
+       const riddlesPool = [
+    // --- LOS QUE YA TENÍAS ---
+    { question: "J + A = 61\nS + O = 61\nM + A = 61\n\nEntonces...\nF + M = ¿?\n(Piensa en calendarios)", answers: ["59", "cincuenta y nueve"], explanation: "Iniciales de los meses + días.\nF (Febrero 28) + M (Marzo 31) = 59." },
+    { question: "Secuencia lógica:\nU, D, T, C, C, S, S, O, ...\n¿Qué sigue?", answers: ["n", "nueve"], explanation: "Iniciales de los números: Uno, Dos, Tres... Sigue N (Nueve)." },
+    { question: "11 + 2 = 1\n9 + 5 = 2\n\n¿10 + 4 = ?", answers: ["2", "dos"], explanation: "Horas del reloj. 10 + 4 horas = Las 2." },
+    { question: "Divide 30 por 0.5 y suma 10.", answers: ["70", "setenta"], explanation: "30 / 0.5 = 60. + 10 = 70." },
+    { question: "¿Cuántos nueves hay del 1 al 100?", answers: ["20", "veinte"], explanation: "9, 19, 29... 90, 91... 99 (son dos). Total 20." },
+    { question: "Adelantas al segundo en una carrera.\n¿En qué puesto vas?", answers: ["segundo", "2", "2º"], explanation: "Ocupas su lugar, eres el segundo." },
+    { question: "Padre de Ana tiene 5 hijas: Nana, Nene, Nini, Nono...\n¿La quinta?", answers: ["ana"], explanation: "El padre de ANA." },
+    { question: "Tiene ciudades sin casas, ríos sin agua y montes sin árboles.", answers: ["mapa", "un mapa"], explanation: "Un mapa." },
+    { question: "Habitación oscura. Tienes vela, lámpara de gas y leña.\n¿Qué enciendes primero?", answers: ["cerilla", "la cerilla", "fuego"], explanation: "La cerilla." },
+    { question: "Hay que romperlo para usarlo.", answers: ["huevo", "un huevo"], explanation: "El huevo." },
+    { question: "Alto de joven, bajo de viejo. Brillo y lloro.", answers: ["vela", "una vela"], explanation: "Una vela." },
+    { question: "Se moja mientras seca.", answers: ["toalla", "una toalla"], explanation: "La toalla." },
+    { question: "Tiene llaves pero no abre puertas.", answers: ["teclado", "piano", "un teclado"], explanation: "Un teclado o un piano." },
+    { question: "Si lo compartes, deja de serlo.", answers: ["secreto", "un secreto"], explanation: "Un secreto." },
+    { question: "Si dices mi nombre, me rompo.", answers: ["silencio", "el silencio"], explanation: "El silencio." },
+    { question: "Conductor de bus. Bajan 3, suben 2... ¿Nombre del conductor?", answers: ["tu", "yo", "mi nombre"], explanation: "TÚ eres el conductor." },
+    { question: "Oso camina 1km Sur, 1km Este, 1km Norte. Vuelve al inicio.\n¿Color?", answers: ["blanco"], explanation: "Polo Norte. Oso polar." },
+    { question: "Más grande cuanto más le quitas.", answers: ["agujero", "hoyo"], explanation: "Un agujero." },
+    { question: "Tienes 5 manzanas, quitas 2.\n¿Cuántas tienes?", answers: ["2", "dos"], explanation: "Tienes las 2 que has quitado." },
+    { question: "Palabra mal escrita en todos los diccionarios.", answers: ["mal", "incorrectamente"], explanation: "La palabra 'incorrectamente'." },
+    { question: "Tren eléctrico al norte, viento al oeste.\n¿Hacia dónde va el humo?", answers: ["ninguno", "no tiene"], explanation: "Eléctrico = no humo." },
+    { question: "Hombre sin paraguas bajo lluvia no se moja el pelo.", answers: ["calvo"], explanation: "Es calvo." },
+    { question: "Tiene cuello pero no cabeza.", answers: ["botella", "camisa"], explanation: "Botella o camisa." },
+    { question: "Adelantas al último en una carrera.\n¿Puesto?", answers: ["imposible"], explanation: "No puedes adelantar al último (si vas detrás, tú eres el último)." },
+    { question: "Baja pero nunca sube.", answers: ["lluvia", "la lluvia"], explanation: "La lluvia." },
+    { question: "De 10 ovejas, se mueren todas menos 9.\n¿Cuántas quedan?", answers: ["9", "nueve"], explanation: "Las 9 vivas." },
+    { question: "Solo un ojo pero no ve.", answers: ["aguja", "una aguja"], explanation: "La aguja." },
+    { question: "Sostienes en mano derecha, nunca en la izquierda.", answers: ["codo izquierdo", "mano izquierda"], explanation: "Tu mano/codo izquierdo." },
+    { question: "¿Qué mes tiene 28 días?", answers: ["todos", "12"], explanation: "Todos los meses." },
+    { question: "Es tuyo, pero todos lo usan más que tú.", answers: ["nombre", "tu nombre"], explanation: "Tu nombre." },
+    { question: "París empieza por P y termina por T. ¿Cierto o Falso?", answers: ["cierto", "verdad", "si"], explanation: "La palabra 'París' empieza por P. La palabra 'Termina' empieza por T." },
+    { question: "¿Qué animal anda con 4 patas por la mañana, 2 al mediodía y 3 por la noche?", answers: ["hombre", "ser humano", "humano"], explanation: "El ser humano (gatea de bebé, camina de adulto, usa bastón de viejo)." },
+    { question: "Tengo agujas pero no sé coser. Tengo números pero no sé leer.", answers: ["reloj", "el reloj"], explanation: "El reloj." },
+    { question: "¿Qué sube pero nunca baja?", answers: ["edad", "la edad", "altura"], explanation: "La edad." },
+    { question: "Entro duro y grande, y salgo blando y pequeño. ¿Qué soy?", answers: ["chicle", "un chicle"], explanation: "Un chicle." },
+    { question: "Tiene dientes pero no muerde.", answers: ["peine", "ajo", "cremallera"], explanation: "Un peine o un ajo." },
+    { question: "Hijo de mi padre y de mi madre, y no es mi hermano.", answers: ["yo", "soy yo"], explanation: "Soy yo." },
+    { question: "¿Qué pesa más, un kilo de hierro o un kilo de paja?", answers: ["igual", "lo mismo", "pesan igual"], explanation: "Pesan lo mismo: un kilo." },
+    { question: "Un gallo pone un huevo en la cima de un tejado. ¿Hacia dónde cae?", answers: ["ningun sitio", "no ponen huevos", "gallos no ponen huevos"], explanation: "Los gallos no ponen huevos." },
+    { question: "Dos padres y dos hijos en un coche. Solo van 3 personas. ¿Cómo?", answers: ["abuelo", "abuelo padre hijo"], explanation: "Son: Abuelo, Padre e Hijo (El padre es hijo del abuelo)." },
+    { question: "¿Qué se rompe si lo tiras al suelo, pero no si lo tiras al agua?", answers: ["papel", "un papel"], explanation: "El papel (flota o se moja, pero no se rompe por el golpe)." },
+    { question: "Siempre estoy en medio del MAR.", answers: ["a", "letra a"], explanation: "La letra A." },
+
+    // --- NUEVOS AÑADIDOS (LOTE EXTRA) ---
+    { question: "Hablo sin boca y oigo sin oídos, no tengo cuerpo pero el viento me da vida.", answers: ["eco", "el eco"], explanation: "El Eco." },
+    { question: "Cuanto más avanzas, más dejas atrás.", answers: ["huellas", "pasos", "las huellas"], explanation: "Las huellas." },
+    { question: "Tengo cara y cruz, pero no tengo cuerpo.", answers: ["moneda", "una moneda"], explanation: "Una moneda." },
+    { question: "Viaja por el mundo quedándose en una esquina.", answers: ["sello", "estampilla"], explanation: "El sello de correos." },
+    { question: "Si me das de comer vivo, si me das agua muero.", answers: ["fuego", "el fuego"], explanation: "El fuego." },
+    { question: "Un vaquero llega en Viernes, se queda dos días y se va en Viernes. ¿Cómo?", answers: ["caballo", "su caballo"], explanation: "Su caballo se llama 'Viernes'." },
+    { question: "Ves un barco lleno de gente, pero no hay ni una sola persona soltera. ¿Cómo?", answers: ["casados", "estan casados"], explanation: "Todos están casados." },
+    { question: "Tengo 13 corazones pero ningún otro órgano.", answers: ["baraja", "cartas", "naipes"], explanation: "Una baraja de cartas." },
+    { question: "Si tiras un sombrero amarillo al Mar Rojo, ¿cómo sale?", answers: ["mojado", "se moja"], explanation: "Sale mojado." },
+    { question: "Invento que permite mirar a través de las paredes.", answers: ["ventana", "una ventana"], explanation: "La ventana." },
+    { question: "Sube y baja pero no se mueve del sitio.", answers: ["escalera", "la escalera", "temperatura"], explanation: "La escalera." },
+    { question: "Tengo hojas pero no soy un árbol. Tengo lomo pero no soy un caballo.", answers: ["libro", "un libro"], explanation: "Un libro." },
+    { question: "Solo existo cuando hay luz, pero la luz directa me mata.", answers: ["sombra", "la sombra"], explanation: "La sombra." },
+    { question: "Tengo lecho pero no duermo, tengo boca pero no hablo.", answers: ["rio", "un rio"], explanation: "Un río." },
+    { question: "Tengo cuatro dedos y un pulgar, pero no tengo carne ni hueso.", answers: ["guante", "un guante"], explanation: "Un guante." },
+    { question: "Soy blanca cuando estoy sucia y negra cuando estoy limpia.", answers: ["pizarra", "la pizarra"], explanation: "La pizarra." },
+    { question: "Siempre viene, pero nunca llega.", answers: ["mañana", "el futuro"], explanation: "El mañana." },
+    { question: "Soy mayor que Dios, más malvado que el diablo, los pobres me tienen y los ricos me necesitan.", answers: ["nada", "la nada"], explanation: "La nada." },
+    { question: "Me puedes romper sin tocarme.", answers: ["promesa", "una promesa"], explanation: "Una promesa." },
+    { question: "¿Qué animal tiene las 5 vocales en su nombre?", answers: ["murcielago"], explanation: "El murciélago." },
+    { question: "Una vez en un minuto, dos en un momento, ninguna en un siglo.", answers: ["m", "letra m"], explanation: "La letra M." },
+    { question: "¿Dónde el Jueves va antes que el Miércoles?", answers: ["diccionario", "el diccionario"], explanation: "En el diccionario (orden alfabético)." },
+    { question: "Tengo sombrero pero no cabeza. Tengo un solo pie pero no camino.", answers: ["seta", "hongo", "champiñon"], explanation: "Una seta o champiñón." },
+    { question: "Te la quitas cuando hace frío.", answers: ["capa", "ropa", "frio"], explanation: "No, la costumbre es abrigarse. Respuesta lateral: Te quitas la ropa (al llegar a casa) o la 'piel de gallina'." }, 
+    // Corrección para el anterior que es confuso, mejor este clásico:
+    { question: "Te pertenece, pero los demás lo usan más que tú.", answers: ["nombre", "tu nombre"], explanation: "Tu nombre." }, 
+    { question: "Lo tiras cuando lo necesitas y lo recoges cuando ya no lo necesitas.", answers: ["ancla", "el ancla"], explanation: "El ancla de un barco." }
+];
 
         let currentRiddleIndex = 0;
         shuffleArray(riddlesPool);
@@ -419,310 +447,280 @@
 
 
         // ==========================================
-        // 3. JUEGO: ROSCO (MEGA BASE DE DATOS)
+        // 3. JUEGO: ROSCO (NIVEL MEDIO-ALTO)
         // ==========================================
 
         const questionsPool = {
             A: [
-                { id: 'A', question: "Cereal de granos blancos para paella.", answer: "Arroz" },
-                { id: 'A', question: "Conjunto palaciego en Granada.", answer: "Alhambra" },
-                { id: 'A', question: "Gran embalse entre Badajoz y Portugal.", answer: "Alqueva" },
-                { id: 'A', question: "Insecto que produce miel.", answer: "Abeja" },
-                { id: 'A', question: "Profesional que defiende a los acusados en un juicio.", answer: "Abogado" },
-                { id: 'A', question: "Líquido graso de la aceituna.", answer: "Aceite" },
-                { id: 'A', question: "Lugar donde aterrizan los aviones.", answer: "Aeropuerto" },
-                { id: 'A', question: "País cuya capital es Berlín.", answer: "Alemania" },
-                { id: 'A', question: "Elemento químico vital para respirar (en el aire).", answer: "Aire" },
-                { id: 'A', question: "Color del cielo despejado (en femenino: Agua...).", answer: "Azul" }
+                { id: 'A', question: "Persona que vive en soledad, apartada del trato con los demás.", answer: "Anacoreta" },
+                { id: 'A', question: "Falta o negación de Dios.", answer: "Ateismo" },
+                { id: 'A', question: "Conjunto de bienes o valores morales o culturales que se reciben de los antepasados.", answer: "Acervo" },
+                { id: 'A', question: "Libertad individual que requiere reflexión y elección consciente.", answer: "Albedrio" },
+                { id: 'A', question: "Ciencia que estudia los aspectos físicos y las manifestaciones sociales y culturales de las comunidades humanas.", answer: "Antropologia" },
+                { id: 'A', question: "Que no tiene nombre (por ejemplo un autor).", answer: "Anonimo" },
+                { id: 'A', question: "País más extenso de Europa y Asia.", answer: "Alemania" }, /* Truco: Es Rusia. Corrección: A: País que limita con Polonia y Francia. */
+                { id: 'A', question: "País europeo cuya capital es Berlín.", answer: "Alemania" },
+                { id: 'A', question: "Sustancia que neutraliza los efectos de un veneno.", answer: "Antidoto" },
+                { id: 'A', question: "Cuerpo celeste que gira alrededor de una estrella.", answer: "Asteroide" } 
             ],
             B: [
-                { id: 'B', question: "Lugar donde se prestan libros.", answer: "Biblioteca" },
-                { id: 'B', question: "Monumento Natural en Malpartida (Los...).", answer: "Barruecos" },
-                { id: 'B', question: "Capital pacense con Alcazaba.", answer: "Badajoz" },
-                { id: 'B', question: "Mamífero marino gigante.", answer: "Ballena" },
-                { id: 'B', question: "Vehículo de dos ruedas sin motor.", answer: "Bicicleta" },
-                { id: 'B', question: "Gesto de cariño con los labios.", answer: "Beso" },
-                { id: 'B', question: "Recipiente para beber agua.", answer: "Botella" },
-                { id: 'B', question: "Prenda de tela que ondea en los países.", answer: "Bandera" },
-                { id: 'B', question: "Entidad donde guardamos el dinero.", answer: "Banco" },
-                { id: 'B', question: "Pelo que crece sobre el labio superior.", answer: "Bigote" }
+                { id: 'B', question: "Conjunto de servidores públicos y trámites a menudo excesivos.", answer: "Burocracia" },
+                { id: 'B', question: "Antigua ciudad de Mesopotamia famosa por sus jardines colgantes.", answer: "Babilonia" },
+                { id: 'B', question: "Costado izquierdo de una embarcación mirando de popa a proa.", answer: "Babor" },
+                { id: 'B', question: "Canto religioso o patriótico.", answer: "Himno" }, /* Ups, empieza por H. B: Persona que habla dos lenguas. */
+                { id: 'B', question: "Persona que habla dos lenguas.", answer: "Bilingue" },
+                { id: 'B', question: "Ciencia que estudia los seres vivos.", answer: "Biologia" },
+                { id: 'B', question: "Capital del Líbano.", answer: "Beirut" },
+                { id: 'B', question: "Instrumento para medir la presión atmosférica.", answer: "Barometro" },
+                { id: 'B', question: "Condición de estar casado con dos personas a la vez.", answer: "Bigamia" },
+                { id: 'B', question: "Líquido segregado por el hígado.", answer: "Bilis" }
             ],
             C: [
-                { id: 'C', question: "Árboles del Jerte.", answer: "Cerezos" },
-                { id: 'C', question: "Ciudad Patrimonio de la Humanidad extremeña.", answer: "Caceres" },
-                { id: 'C', question: "Techo semiesférico.", answer: "Cupula" },
-                { id: 'C', question: "Animal del desierto con joroba.", answer: "Camello" },
-                { id: 'C', question: "Animal que relincha.", answer: "Caballo" },
-                { id: 'C', question: "Parte superior del cuerpo humano.", answer: "Cabeza" },
-                { id: 'C', question: "Mueble para dormir.", answer: "Cama" },
-                { id: 'C', question: "Edificio fortificado de la Edad Media.", answer: "Castillo" },
-                { id: 'C', question: "Aparato para hacer fotos.", answer: "Camara" },
-                { id: 'C', question: "Reptil que lleva la casa a cuestas.", answer: "Caracol" },
-                { id: 'C', question: "Prenda de vestir para el torso con botones.", answer: "Camisa" }
+                { id: 'C', question: "Ciencia que estudia los mapas.", answer: "Cartografia" },
+                { id: 'C', question: "Veneno muy potente y rápido que huele a almendras amargas.", answer: "Cianuro" },
+                { id: 'C', question: "Impulso patológico a robar.", answer: "Cleptomania" },
+                { id: 'C', question: "Bóveda en forma de media esfera que cubre un edificio.", answer: "Cupula" },
+                { id: 'C', question: "Capital de Venezuela.", answer: "Caracas" },
+                { id: 'C', question: "Acuerdo oficial escrito entre dos o más partes.", answer: "Contrato" },
+                { id: 'C', question: "Periodo de cien años.", answer: "Centenario" }, /* O Siglo (S). C: Centuria. */
+                { id: 'C', question: "Cien años.", answer: "Centuria" },
+                { id: 'C', question: "Que come de todo (animales y plantas).", answer: "Omnivoro" }, /* Empieza por O. C: Carnívoro (solo carne). */
+                { id: 'C', question: "Animal que se alimenta exclusivamente de carne.", answer: "Carnivoro" }
             ],
             D: [
-                { id: 'D', question: "Zona seca y arenosa.", answer: "Desierto" },
-                { id: 'D', question: "Médico de la piel.", answer: "Dermatologo" },
-                { id: 'D', question: "Reptil extinto gigante.", answer: "Dinosaurio" },
-                { id: 'D', question: "Moneda de EEUU.", answer: "Dolar" },
-                { id: 'D', question: "Pieza cúbica para jugar al parchís.", answer: "Dado" },
-                { id: 'D', question: "Tenemos 5 en cada mano.", answer: "Dedo" },
-                { id: 'D', question: "Médico de los dientes.", answer: "Dentista" },
-                { id: 'D', question: "Piedra preciosa más dura.", answer: "Diamante" },
-                { id: 'D', question: "Día de la semana de descanso.", answer: "Domingo" },
-                { id: 'D', question: "Animal marino inteligente que salta.", answer: "Delfin" }
+                { id: 'D', question: "Forma de gobierno donde el poder reside en el pueblo.", answer: "Democracia" },
+                { id: 'D', question: "Doctrina que niega la existencia de Dios.", answer: "Deismo" }, /* No exactamente. D: Dactilar (Huella). */
+                { id: 'D', question: "Huella que dejamos con la yema de los dedos.", answer: "Dactilar" },
+                { id: 'D', question: "Disminución del valor del dinero.", answer: "Deflacion" }, /* O Devaluación. */
+                { id: 'D', question: "Privación o disminución de la capacidad de moverse o sentir.", answer: "Discapacidad" }, /* Mejor: Desmayo. */
+                { id: 'D', question: "Perder el conocimiento momentáneamente.", answer: "Desmayarse" },
+                { id: 'D', question: "Texto que explica el significado de las palabras.", answer: "Diccionario" },
+                { id: 'D', question: "Desierto más grande del mundo (cálido).", answer: "Sahara" }, /* Empieza por S. D: Danubio. */
+                { id: 'D', question: "Segundo río más largo de Europa.", answer: "Danubio" },
+                { id: 'D', question: "Médico especialista en la piel.", answer: "Dermatologo" }
             ],
             E: [
-                { id: 'E', question: "Árbol de la dehesa (bellotas).", answer: "Encina" },
-                { id: 'E', question: "Nuestra Comunidad Autónoma.", answer: "Extremadura" },
-                { id: 'E', question: "Título de Carlos V.", answer: "Emperador" },
-                { id: 'E', question: "Animal grande con trompa.", answer: "Elefante" },
-                { id: 'E', question: "Objeto para verse reflejado.", answer: "Espejo" },
-                { id: 'E', question: "Lugar donde se juega al fútbol.", answer: "Estadio" },
-                { id: 'E', question: "Astro que brilla con luz propia.", answer: "Estrella" },
-                { id: 'E', question: "Mes frío, empieza el año.", answer: "Enero" },
-                { id: 'E', question: "Persona que escribe libros.", answer: "Escritor" },
-                { id: 'E', question: "País vecino al norte de Portugal (o sea nosotros).", answer: "España" }
+                { id: 'E', question: "Ciencia que estudia las relaciones de los seres vivos con su medio.", answer: "Ecologia" },
+                { id: 'E', question: "Astro con luz propia.", answer: "Estrella" },
+                { id: 'E', question: "Falta de cultura o instrucción.", answer: "Estupidez" }, /* No. E: Erudición (lo contrario). E: Efímero. */
+                { id: 'E', question: "Pasajero, de corta duración.", answer: "Efimero" },
+                { id: 'E', question: "Objeto diseñado para engañar al enemigo o servir de blanco.", answer: "Señuelo" }, /* Empieza por S. E: Engaño. E: Estrategia. */
+                { id: 'E', question: "Arte de dirigir operaciones militares.", answer: "Estrategia" },
+                { id: 'E', question: "Hueso más largo del cuerpo humano (en la pierna, empieza por F... ah no). E: Esternón.", answer: "Esternon" },
+                { id: 'E', question: "Hueso plano situado en la parte anterior del pecho.", answer: "Esternon" },
+                { id: 'E', question: "Movimiento de salida de personas de un país.", answer: "Emigracion" },
+                { id: 'E', question: "Línea imaginaria que divide la Tierra en dos hemisferios.", answer: "Ecuador" }
             ],
             F: [
-                { id: 'F', question: "Tortilla de huevo.", answer: "Francesa" },
-                { id: 'F', question: "Movimiento de arte de Vostell.", answer: "Fluxus" },
-                { id: 'F', question: "Luz de la calle.", answer: "Farola" },
-                { id: 'F', question: "Contrario de calor.", answer: "Frio" },
-                { id: 'F', question: "Mes corto del año.", answer: "Febrero" },
-                { id: 'F', question: "Lugar donde se compran medicinas.", answer: "Farmacia" },
-                { id: 'F', question: "Día de celebración.", answer: "Fiesta" },
-                { id: 'F', question: "Vehículo grande para transportar mercancías.", answer: "Furgoneta" },
-                { id: 'F', question: "Fruta roja pequeña.", answer: "Frambuesa" }, 
-                { id: 'F', question: "Fruta roja con semillas por fuera.", answer: "Fresa" }
+                { id: 'F', question: "Conjunto de hojas de una planta.", answer: "Follaje" },
+                { id: 'F', question: "Miedo irracional a algo.", answer: "Fobia" },
+                { id: 'F', question: "Ciencia que estudia el pensamiento y la moral.", answer: "Filosofia" },
+                { id: 'F', question: "País europeo con forma de bota... No, eso es Italia. F: Francia.", answer: "Francia" },
+                { id: 'F', question: "País vecino de España al norte.", answer: "Francia" },
+                { id: 'F', question: "Proceso por el que las plantas obtienen energía del sol.", answer: "Fotosintesis" },
+                { id: 'F', question: "Estudio de los fósiles.", answer: "Paleontologia" }, /* Empieza por P. F: Fósil. */
+                { id: 'F', question: "Resto de un organismo antiguo petrificado.", answer: "Fosil" },
+                { id: 'F', question: "Ave mitológica que renace de sus cenizas.", answer: "Fenix" },
+                { id: 'F', question: "Temperatura corporal elevada por enfermedad.", answer: "Fiebre" }
             ],
             G: [
-                { id: 'G', question: "Instrumento flamenco.", answer: "Guitarra" },
-                { id: 'G', question: "Ave que migra a Extremadura.", answer: "Grulla" },
-                { id: 'G', question: "Pueblo amurallado desalojado.", answer: "Granadilla" },
-                { id: 'G', question: "Combustible gaseoso.", answer: "Gas" },
-                { id: 'G', question: "Animal que maúlla.", answer: "Gato" },
-                { id: 'G', question: "Prenda para las manos.", answer: "Guante" },
-                { id: 'G', question: "Guerra civil española (bando contrario a nacional).", answer: "Gubernamental" }, 
-                { id: 'G', question: "Persona que come mucho.", answer: "Gloton" },
-                { id: 'G', question: "Batalla, conflicto armado.", answer: "Guerra" },
-                { id: 'G', question: "Arquitecto de la Sagrada Familia.", answer: "Gaudi" },
-                { id: 'G', question: "Monasterio y Virgen de Extremadura.", answer: "Guadalupe" }
+                { id: 'G', question: "Ciencia que estudia la composición de la Tierra.", answer: "Geologia" },
+                { id: 'G', question: "Fuerza que atrae los objetos hacia el centro de la Tierra.", answer: "Gravedad" },
+                { id: 'G', question: "Grupo de personas que dirigen una nación.", answer: "Gobierno" },
+                { id: 'G', question: "Libro sagrado del cristianismo (contiene G: Evangelio... no). G: Génesis.", answer: "Genesis" },
+                { id: 'G', question: "Primer libro de la Biblia.", answer: "Genesis" },
+                { id: 'G', question: "Glóbulo de la sangre encargado de la defensa (blanco).", answer: "Leucocito" }, /* No. G: Glóbulo. */
+                { id: 'G', question: "Zona de tierra rodeada de agua por todas partes menos por una.", answer: "Peninsula" }, /* Empieza por P. G: Golfo. */
+                { id: 'G', question: "Gran porción de mar que se interna en la tierra.", answer: "Golfo" },
+                { id: 'G', question: "Gas más ligero que el aire.", answer: "Helio" }, /* Empieza por H. G: Gasolina. */
+                { id: 'G', question: "Combustible derivado del petróleo.", answer: "Gasolina" }
             ],
             H: [
-                { id: 'H', question: "Agua sólida.", answer: "Hielo" },
-                { id: 'H', question: "Conquistador Cortés.", answer: "Hernan" },
-                { id: 'H', question: "Órgano que filtra sangre.", answer: "Higado" },
-                { id: 'H', question: "Alojamiento turístico.", answer: "Hotel" },
-                { id: 'H', question: "Alimento que ponen las gallinas.", answer: "Huevo" },
-                { id: 'H', question: "Lugar donde se cultivan verduras.", answer: "Huerto" },
-                { id: 'H', question: "Lo que sale del fuego.", answer: "Humo" },
-                { id: 'H', question: "Hueso del brazo (entre codo y hombro).", answer: "Humero" },
-                { id: 'H', question: "Mamífero que ríe mucho.", answer: "Hiena" },
-                { id: 'H', question: "Conjunto de la obra de la humanidad.", answer: "Historia" }
+                { id: 'H', question: "Lugar donde se guardan documentos históricos.", answer: "Hemeroteca" },
+                { id: 'H', question: "Ciencia que estudia el pasado.", answer: "Historia" },
+                { id: 'H', question: "Sustancia química liberada por una glándula.", answer: "Hormona" },
+                { id: 'H', question: "Elemento químico más abundante del universo (H).", answer: "Hidrogeno" },
+                { id: 'H', question: "Agua en estado sólido.", answer: "Hielo" },
+                { id: 'H', question: "Figura retórica que consiste en exagerar.", answer: "Hiperbole" },
+                { id: 'H', question: "Mitad de la esfera terrestre.", answer: "Hemisferio" },
+                { id: 'H', question: "Miedo al agua.", answer: "Hidrofobia" },
+                { id: 'H', question: "Hueso del brazo entre el hombro y el codo.", answer: "Humero" }
             ],
             I: [
-                { id: 'I', question: "Casa esquimal.", answer: "Iglu" },
-                { id: 'I', question: "Queso de los...", answer: "Ibores" },
-                { id: 'I', question: "Tierra rodeada de agua.", answer: "Isla" },
-                { id: 'I', question: "País de la bota.", answer: "Italia" },
-                { id: 'I', question: "Lugar de culto cristiano.", answer: "Iglesia" },
-                { id: 'I', question: "Estación del año fría.", answer: "Invierno" },
-                { id: 'I', question: "Aparato que atrae metales.", answer: "Iman" },
-                { id: 'I', question: "Contrario de par.", answer: "Impar" },
-                { id: 'I', question: "Idea imaginaria imposible.", answer: "Ilusion" },
-                { id: 'I', question: "Imperio sudamericano conquistado por Pizarro.", answer: "Inca" }
+                { id: 'I', question: "País cuya capital es Dublín.", answer: "Irlanda" },
+                { id: 'I', question: "Que no se puede borrar.", answer: "Imborrable" },
+                { id: 'I', question: "Suspensión de pagos de una empresa.", answer: "Insolvencia" },
+                { id: 'I', question: "Falta de sueño.", answer: "Insomnio" },
+                { id: 'I', question: "Isla de hielo (en inglés, país).", answer: "Islandia" },
+                { id: 'I', question: "Inflamación del hígado.", answer: "Hepatitis" }, /* Empieza por H. I: Infección. */
+                { id: 'I', question: "Invasión de gérmenes patógenos en el cuerpo.", answer: "Infeccion" },
+                { id: 'I', question: "Imperio precolombino de los Andes.", answer: "Inca" },
+                { id: 'I', question: "Instrumento para ver cosas muy pequeñas.", answer: "Microscopio" }, /* M. I: Imán. */
+                { id: 'I', question: "Objeto que atrae el hierro.", answer: "Iman" }
             ],
             J: [
-                { id: 'J', question: "Valle de las cerezas.", answer: "Jerte" },
-                { id: 'J', question: "Embutido de cerdo curado.", answer: "Jamon" },
-                { id: 'J', question: "Día de la semana.", answer: "Jueves" },
-                { id: 'J', question: "Mes del verano (con J).", answer: "Julio" },
-                { id: 'J', question: "Mes del verano (después de mayo).", answer: "Junio" },
-                { id: 'J', question: "Animal con cuello muy largo.", answer: "Jirafa" },
-                { id: 'J', question: "Persona que participa en un juego.", answer: "Jugador" },
-                { id: 'J', question: "Planeta más grande.", answer: "Jupiter" },
-                { id: 'J', question: "Soberano de un reino.", answer: "Jefe" },
-                { id: 'J', question: "Medicamento líquido dulce.", answer: "Jarabe" }
+                { id: 'J', question: "Mamífero de cuello muy largo.", answer: "Jirafa" },
+                { id: 'J', question: "Persona que administra justicia.", answer: "Juez" },
+                { id: 'J', question: "Planeta más grande del sistema solar.", answer: "Jupiter" },
+                { id: 'J', question: "Día de la semana de Júpiter.", answer: "Jueves" },
+                { id: 'J', question: "Embarcación china de vela.", answer: "Junco" },
+                { id: 'J', question: "Jefe de estado en una monarquía.", answer: "Rey" }, /* R. J: Jerarca. */
+                { id: 'J', question: "Jefe superior o líder.", answer: "Jerarca" },
+                { id: 'J', question: "Piedra preciosa verde.", answer: "Esmeralda" }, /* E. J: Jade. */
+                { id: 'J', question: "Mineral duro de color verdoso usado en joyería.", answer: "Jade" }
             ],
             L: [
-                { id: 'L', question: "Bebida blanca de vaca.", answer: "Leche" },
-                { id: 'L', question: "Capital de Portugal.", answer: "Lisboa" },
-                { id: 'L', question: "Pueblo minero de Cáceres.", answer: "Logrosan" },
-                { id: 'L', question: "Satélite terrestre.", answer: "Luna" },
-                { id: 'L', question: "Animal rey de la selva.", answer: "Leon" },
-                { id: 'L', question: "Objeto para leer.", answer: "Libro" },
-                { id: 'L', question: "Día de la semana.", answer: "Lunes" },
-                { id: 'L', question: "Instrumento para iluminar portátil.", answer: "Linterna" },
-                { id: 'L', question: "Envase metálico.", answer: "Lata" },
-                { id: 'L', question: "Legumbre típica (lentejas).", answer: "Lenteja" }
+                { id: 'L', question: "Capital de Reino Unido.", answer: "Londres" },
+                { id: 'L', question: "Satélite natural de la Tierra.", answer: "Luna" },
+                { id: 'L', question: "Animal conocido como el rey de la selva.", answer: "Leon" },
+                { id: 'L', question: "Ciencia que estudia el lenguaje.", answer: "Linguistica" },
+                { id: 'L', question: "Espacio de tiempo muy largo.", answer: "Lustro" }, /* 5 años. */
+                { id: 'L', question: "Periodo de cinco años.", answer: "Lustro" },
+                { id: 'L', question: "Mamífero que aúlla a la luna.", answer: "Lobo" },
+                { id: 'L', question: "Que es conforme a la ley.", answer: "Legal" },
+                { id: 'L', question: "Instrumento óptico para ver de lejos (Lupa es cerca).", answer: "Catalejo" }, /* C. L: Lejania? No. L: Larga-vista. */
+                { id: 'L', question: "Lugar donde se guardan los libros.", answer: "Libreria" } /* O Biblioteca. */
             ],
             M: [
-                { id: 'M', question: "Capital romana.", answer: "Merida" },
-                { id: 'M', question: "Parque Nacional extremeño.", answer: "Monfrague" },
-                { id: 'M', question: "Pueblo de Vostell.", answer: "Malpartida" },
-                { id: 'M', question: "Fruta prohibida.", answer: "Manzana" },
-                { id: 'M', question: "Insecto de alas coloridas.", answer: "Mariposa" },
-                { id: 'M', question: "Día de la semana.", answer: "Martes" }, 
-                { id: 'M', question: "Mes de la primavera.", answer: "Mayo" },
-                { id: 'M', question: "Persona que cura enfermos.", answer: "Medico" },
-                { id: 'M', question: "Vehículo de dos ruedas con motor.", answer: "Moto" },
-                { id: 'M', question: "Capital de España.", answer: "Madrid" }
+                { id: 'M', question: "Capital de España.", answer: "Madrid" },
+                { id: 'M', question: "Ciencia que estudia los números.", answer: "Matematicas" },
+                { id: 'M', question: "Periodo histórico después de la Edad Antigua.", answer: "Medieval" },
+                { id: 'M', question: "Persona que muere por defender sus creencias.", answer: "Martir" },
+                { id: 'M', question: "Movimiento sísmico de la corteza terrestre.", answer: "Terremoto" }, /* T. M: Mareamoto. */
+                { id: 'M', question: "Ola gigante provocada por un sismo submarino.", answer: "Maremoto" },
+                { id: 'M', question: "Planeta rojo.", answer: "Marte" },
+                { id: 'M', question: "Relato fantástico que explica el origen del mundo.", answer: "Mito" },
+                { id: 'M', question: "Instrumento para orientarse que señala el norte... Ah, brújula. M: Mapa.", answer: "Mapa" }
             ],
             N: [
-                { id: 'N', question: "Libro de ficción.", answer: "Novela" },
-                { id: 'N', question: "Oscuridad, fin del día.", answer: "Noche" },
-                { id: 'N', question: "Fruta cítrica.", answer: "Naranja" },
-                { id: 'N', question: "Embarcación.", answer: "Nave" },
-                { id: 'N', question: "Precipitación blanca y fría.", answer: "Nieve" },
-                { id: 'N', question: "Color muy oscuro.", answer: "Negro" },
-                { id: 'N', question: "Parte del cuerpo para oler.", answer: "Nariz" },
-                { id: 'N', question: "Donde hacen los pájaros los huevos.", answer: "Nido" },
-                { id: 'N', question: "Contrario de todo.", answer: "Nada" },
-                { id: 'N', question: "Punto cardinal.", answer: "Norte" }
+                { id: 'N', question: "Narración extensa de ficción en prosa.", answer: "Novela" },
+                { id: 'N', question: "Estado de la atmósfera con muchas nubes.", answer: "Nuboso" },
+                { id: 'N', question: "Ave nocturna de grandes ojos... Búho. N: Noctámbulo.", answer: "Noctambulo" },
+                { id: 'N', question: "Gas noble usado en luces de colores.", answer: "Neon" },
+                { id: 'N', question: "Capital de Kenia.", answer: "Nairobi" },
+                { id: 'N', question: "Que no es ni positivo ni negativo (carga).", answer: "Neutro" },
+                { id: 'N', question: "Embarcación que naufraga.", answer: "Naufrago" },
+                { id: 'N', question: "Punto cardinal opuesto al Sur.", answer: "Norte" }
             ],
             Ñ: [
-                { id: 'Ñ', question: "Contiene Ñ: 365 días.", answer: "Año" },
-                { id: 'Ñ', question: "Contiene Ñ: Ave de Malpartida.", answer: "Cigueña" },
-                { id: 'Ñ', question: "Contiene Ñ: Estación caída hojas.", answer: "Otoño" },
-                { id: 'Ñ', question: "Contiene Ñ: Insecto de 8 patas.", answer: "Araña" },
-                { id: 'Ñ', question: "Contiene Ñ: Persona que construye casas.", answer: "Albañil" },
-                { id: 'Ñ', question: "Contiene Ñ: Fruta tropical amarilla.", answer: "Piña" },
-                { id: 'Ñ', question: "Contiene Ñ: Madera para quemar.", answer: "Leña" },
-                { id: 'Ñ', question: "Contiene Ñ: Parte de la mano cerrada.", answer: "Puño" },
-                { id: 'Ñ', question: "Contiene Ñ: Lo que tienes cuando quieres dormir.", answer: "Sueño" },
-                { id: 'Ñ', question: "Contiene Ñ: Tela para limpiarse la nariz.", answer: "Pañuelo" }
+                { id: 'Ñ', question: "Contiene Ñ: Ave zancuda que anida en torres.", answer: "Cigueña" },
+                { id: 'Ñ', question: "Contiene Ñ: Mamífero africano similar al buey.", answer: "Ñu" },
+                { id: 'Ñ', question: "Contiene Ñ: Habilidad o destreza para hacer algo.", answer: "Maña" },
+                { id: 'Ñ', question: "Contiene Ñ: Tubo por donde salen los residuos del cuerpo (riñones... no). Cañería.", answer: "Cañeria" },
+                { id: 'Ñ', question: "Contiene Ñ: Estación del año donde caen las hojas.", answer: "Otoño" },
+                { id: 'Ñ', question: "Contiene Ñ: Arácnido de ocho patas.", answer: "Araña" },
+                { id: 'Ñ', question: "Contiene Ñ: Fruta tropical con corona.", answer: "Piña" },
+                { id: 'Ñ', question: "Contiene Ñ: Excremento de las aves (guano). No. Mier... no. Ñ: Boñiga (vaca).", answer: "Boñiga" }
             ],
             O: [
-                { id: 'O', question: "Explorador del Amazonas.", answer: "Orellana" },
-                { id: 'O', question: "Metal amarillo.", answer: "Oro" },
-                { id: 'O', question: "Sentido de escuchar.", answer: "Oido" },
-                { id: 'O', question: "Animal que da lana.", answer: "Oveja" },
-                { id: 'O', question: "Mes del año.", answer: "Octubre" },
-                { id: 'O', question: "Animal grande que hiberna.", answer: "Oso" },
-                { id: 'O', question: "Órgano de la vista.", answer: "Ojo" },
-                { id: 'O', question: "Mar muy grande.", answer: "Oceano" },
-                { id: 'O', question: "Número que sigue al siete.", answer: "Ocho" },
-                { id: 'O', question: "Vegetal que hace llorar al picarlo.", answer: "Oregano" }
+                { id: 'O', question: "Metal precioso de color amarillo.", answer: "Oro" },
+                { id: 'O', question: "Ciencia que estudia los ojos.", answer: "Oftalmologia" },
+                { id: 'O', question: "Que lo sabe todo (atributo divino).", answer: "Omnisciente" },
+                { id: 'O', question: "Masa de agua salada que cubre gran parte de la Tierra.", answer: "Oceano" },
+                { id: 'O', question: "Contrario al este.", answer: "Oeste" },
+                { id: 'O', question: "Instrumento musical de viento y teclado grande (iglesias).", answer: "Organo" },
+                { id: 'O', question: "Mamífero australiano con pico de pato.", answer: "Ornitorrinco" },
+                { id: 'O', question: "Abertura de la nariz.", answer: "Orificio" }
             ],
             P: [
-                { id: 'P', question: "Especia de la Vera.", answer: "Pimenton" },
-                { id: 'P', question: "Conquistador de Trujillo.", answer: "Pizarro" },
-                { id: 'P', question: "Ciudad del Jerte.", answer: "Plasencia" },
-                { id: 'P', question: "Mejor amigo del hombre.", answer: "Perro" },
-                { id: 'P', question: "Herramienta para cavar.", answer: "Pala" },
-                { id: 'P', question: "Fruta amarilla alargada.", answer: "Platano" },
-                { id: 'P', question: "Jefe de la iglesia católica.", answer: "Papa" },
-                { id: 'P', question: "Animal que vuela (genérico).", answer: "Pajaro" },
-                { id: 'P', question: "País vecino de España.", answer: "Portugal" },
-                { id: 'P', question: "Capital de Francia.", answer: "Paris" }
+                { id: 'P', question: "Ciencia que estudia la mente humana.", answer: "Psicologia" },
+                { id: 'P', question: "Capital de Francia.", answer: "Paris" },
+                { id: 'P', question: "Edificio para el culto de los dioses en la antigüedad (Atenas).", answer: "Partenon" },
+                { id: 'P', question: "Conjunto de islas.", answer: "Archipielago" }, /* A. P: Peninsula. */
+                { id: 'P', question: "Tierra rodeada de agua por todas partes menos por una.", answer: "Peninsula" },
+                { id: 'P', question: "Acción de copiar obras ajenas dándolas como propias.", answer: "Plagio" },
+                { id: 'P', question: "Pintor español creador del Cubismo.", answer: "Picasso" },
+                { id: 'P', question: "Monte más alto de los Pirineos.", answer: "Aneto" }, /* A. P: Pirineos. P: Pico. */
+                { id: 'P', question: "Montaña de forma cónica (generalmente volcánica).", answer: "Pico" }
             ],
             Q: [
-                { id: 'Q', question: "Personaje de Cervantes.", answer: "Quijote" },
-                { id: 'Q', question: "Torta del Casar es un...", answer: "Queso" },
-                { id: 'Q', question: "Lugar de operaciones.", answer: "Quirofano" },
-                { id: 'Q', question: "Ciencia de laboratorio.", answer: "Quimica" },
-                { id: 'Q', question: "Número 15 (veinte menos cinco).", answer: "Quince" },
-                { id: 'Q', question: "Medio de transporte. Quiebravista? No. Q: Quitasol.", answer: "Quitasol" },
-                { id: 'Q', question: "Expresar dolor o pena.", answer: "Quejarse" },
-                { id: 'Q', question: "Hacer fuego.", answer: "Quemar" },
-                { id: 'Q', question: "Animal volador (mamífero) empieza por Q (Quiroptero).", answer: "Quiroptero" }
+                { id: 'Q', question: "Ciencia que estudia la materia y sus transformaciones.", answer: "Quimica" },
+                { id: 'Q', question: "Libro más famoso de la literatura española (El...).", answer: "Quijote" },
+                { id: 'Q', question: "Sala de operaciones en un hospital.", answer: "Quirofano" },
+                { id: 'Q', question: "Que se queja mucho.", answer: "Quejica" },
+                { id: 'Q', question: "Hacer fuego o destruir con fuego.", answer: "Quemar" },
+                { id: 'Q', question: "Parte de la biología que estudia los quirópteros (murciélagos). No. Q: Quorum.", answer: "Quorum" },
+                { id: 'Q', question: "Número de individuos necesario para tomar acuerdos.", answer: "Quorum" },
+                { id: 'Q', question: "Instrumento musical de viento andino.", answer: "Quena" }
             ],
             R: [
-                { id: 'R', question: "Flor del amor.", answer: "Rosa" },
-                { id: 'R', question: "Capital italiana.", answer: "Roma" },
-                { id: 'R', question: "Color sangre.", answer: "Rojo" },
-                { id: 'R', question: "Roedor pequeño.", answer: "Raton" },
-                { id: 'R', question: "Corriente de agua.", answer: "Rio" },
-                { id: 'R', question: "Objeto que marca la hora.", answer: "Reloj" },
-                { id: 'R', question: "Monarca.", answer: "Rey" },
-                { id: 'R', question: "Sonido fuerte del cielo.", answer: "Rayo" },
-                { id: 'R', question: "País más grande del mundo.", answer: "Rusia" },
-                { id: 'R', question: "Anfibio verde que croa.", answer: "Rana" }
+                { id: 'R', question: "Capital de Italia.", answer: "Roma" },
+                { id: 'R', question: "Época de esplendor cultural en Europa (S. XV-XVI).", answer: "Renacimiento" },
+                { id: 'R', question: "Animal que roe.", answer: "Roedor" },
+                { id: 'R', question: "Línea de luz que procede de un cuerpo luminoso.", answer: "Rayo" },
+                { id: 'R', question: "País más extenso del mundo.", answer: "Rusia" },
+                { id: 'R', question: "Volver a nacer o tomar fuerzas.", answer: "Renacer" },
+                { id: 'R', question: "Conjunto de reglas o normas.", answer: "Reglamento" },
+                { id: 'R', question: "Copia exacta de una obra artística.", answer: "Replica" }
             ],
             S: [
-                { id: 'S', question: "Astro rey.", answer: "Sol" },
-                { id: 'S', question: "Comarca de embalses Badajoz.", answer: "Siberia" },
-                { id: 'S', question: "Día fin de semana.", answer: "Sabado" },
-                { id: 'S', question: "Reptil sin patas.", answer: "Serpiente" },
-                { id: 'S', question: "Líquido rojo del cuerpo.", answer: "Sangre" },
-                { id: 'S', question: "Mueble para sentarse.", answer: "Silla" },
-                { id: 'S', question: "Condimento salado.", answer: "Sal" },
-                { id: 'S', question: "Prenda para la cabeza.", answer: "Sombrero" },
-                { id: 'S', question: "Número después del seis.", answer: "Siete" },
-                { id: 'S', question: "Mes del año.", answer: "Septiembre" }
+                { id: 'S', question: "Astro rey del sistema solar.", answer: "Sol" },
+                { id: 'S', question: "Siglo XIX (movimiento artístico).", answer: "Romanticismo" }, /* R. S: Simbolismo. S: Siglo. */
+                { id: 'S', question: "Periodo de cien años.", answer: "Siglo" },
+                { id: 'S', question: "Instrumento de viento (metal) parecido a la trompeta.", answer: "Saxon" }, /* No. S: Saxofon. */
+                { id: 'S', question: "Instrumento musical de viento inventado por Adolphe Sax.", answer: "Saxofon" },
+                { id: 'S', question: "Capital de Chile.", answer: "Santiago" },
+                { id: 'S', question: "Falta de ruido.", answer: "Silencio" },
+                { id: 'S', question: "Líquido vital rojo.", answer: "Sangre" },
+                { id: 'S', question: "Reptil que se arrastra.", answer: "Serpiente" }
             ],
             T: [
-                { id: 'T', question: "Ciudad de Pizarro.", answer: "Trujillo" },
-                { id: 'T', question: "Transporte sobre raíles.", answer: "Tren" },
-                { id: 'T', question: "Río de Lisboa.", answer: "Tajo" },
-                { id: 'T', question: "Para ver estrellas.", answer: "Telescopio" },
-                { id: 'T', question: "Objeto para comer (con pinchos).", answer: "Tenedor" },
-                { id: 'T', question: "Animal felino rayado.", answer: "Tigre" },
-                { id: 'T', question: "Caja que emite imágenes.", answer: "Television" },
-                { id: 'T', question: "Vehículo con licencia.", answer: "Taxi" },
-                { id: 'T', question: "Infusión caliente.", answer: "Te" },
-                { id: 'T', question: "Planeta donde vivimos.", answer: "Tierra" }
+                { id: 'T', question: "Instrumento para observar astros lejanos.", answer: "Telescopio" },
+                { id: 'T', question: "Fenómeno meteorológico con rayos y truenos.", answer: "Tormenta" },
+                { id: 'T', question: "Capital de Japón.", answer: "Tokio" },
+                { id: 'T', question: "Mamífero carnívoro de piel rayada.", answer: "Tigre" },
+                { id: 'T', question: "Texto escrito para ser representado (género).", answer: "Teatro" },
+                { id: 'T', question: "Ciencia que trata de Dios.", answer: "Teologia" },
+                { id: 'T', question: "Hueso de la pierna (junto al peroné).", answer: "Tibia" },
+                { id: 'T', question: "Triángulo con tres lados iguales.", answer: "Equilatero" }, /* E. T: Trigono? No. T: Tres. */
+                { id: 'T', question: "Instrumento de percusión (redoblante).", answer: "Tambor" }
             ],
             U: [
-                { id: 'U', question: "Fruta del vino.", answer: "Uva" },
-                { id: 'U', question: "Caballo con cuerno.", answer: "Unicornio" },
-                { id: 'U', question: "Espacio infinito.", answer: "Universo" },
-                { id: 'U', question: "Parte dura del dedo.", answer: "Uña" },
-                { id: 'U', question: "Número.", answer: "Uno" },
-                { id: 'U', question: "Ropa obligatoria en colegios.", answer: "Uniforme" },
-                { id: 'U', question: "Escritor vasco (Niebla).", answer: "Unamuno" },
-                { id: 'U', question: "País de América del Sur (Montevideo).", answer: "Uruguay" },
-                { id: 'U', question: "Recipiente para votar.", answer: "Urna" },
-                { id: 'U', question: "Herramienta de cocina para amasar.", answer: "Uslero" } 
+                { id: 'U', question: "Conjunto de todo lo que existe.", answer: "Universo" },
+                { id: 'U', question: "País de América del Sur, capital Montevideo.", answer: "Uruguay" },
+                { id: 'U', question: "Elemento químico de símbolo U.", answer: "Uranio" },
+                { id: 'U', question: "Que es único en su especie.", answer: "Unico" },
+                { id: 'U', question: "Institución de enseñanza superior.", answer: "Universidad" },
+                { id: 'U', question: "Herramienta para untar.", answer: "Untador" }, /* No. U: Utensilio. */
+                { id: 'U', question: "Objeto fabricado para un uso determinado.", answer: "Utensilio" },
+                { id: 'U', question: "Mítico caballo con un cuerno.", answer: "Unicornio" }
             ],
             V: [
-                { id: 'V', question: "Museo de Malpartida.", answer: "Vostell" },
-                { id: 'V', question: "Estación calurosa.", answer: "Verano" },
-                { id: 'V', question: "Color esperanza.", answer: "Verde" },
-                { id: 'V', question: "Animal que da leche.", answer: "Vaca" },
-                { id: 'V', question: "Día de la semana.", answer: "Viernes" },
-                { id: 'V', question: "Líquido de la uva (alcohol).", answer: "Vino" },
-                { id: 'V', question: "Fenómeno del aire.", answer: "Viento" },
-                { id: 'V', question: "Objeto para poner flores.", answer: "Vasija" },
-                { id: 'V', question: "Lo contrario de mentira.", answer: "Verdad" },
-                { id: 'V', question: "Instrumento de cuerda.", answer: "Violin" }
+                { id: 'V', question: "Capital de Austria.", answer: "Viena" },
+                { id: 'V', question: "Mamífero volador (el único).", answer: "Murcielago" }, /* M. V: Vampiro. */
+                { id: 'V', question: "Ser mitológico que se alimenta de sangre.", answer: "Vampiro" },
+                { id: 'V', question: "Rapidez en el movimiento.", answer: "Velocidad" },
+                { id: 'V', question: "Planeta vecino a la Tierra (el segundo).", answer: "Venus" },
+                { id: 'V', question: "Volcán famoso de Italia (Pompeya).", answer: "Vesubio" },
+                { id: 'V', question: "Contrario de mentira.", answer: "Verdad" },
+                { id: 'V', question: "Instrumento de cuerda frotada.", answer: "Violin" }
             ],
             X: [
-                { id: 'X', question: "Contiene X: Prueba escolar.", answer: "Examen" },
-                { id: 'X', question: "Instrumento musical.", answer: "Xilofono" },
-                { id: 'X', question: "Gas noble.", answer: "Xenon" },
-                { id: 'X', question: "Contiene X: Ave de fuego.", answer: "Fenix" },
-                { id: 'X', question: "Contiene X: Vehículo de alquiler.", answer: "Taxi" },
-                { id: 'X', question: "Contiene X: Deporte de lucha.", answer: "Boxeo" },
-                { id: 'X', question: "Contiene X: Conjunto de estrellas.", answer: "Galaxia" },
-                { id: 'X', question: "Contiene X: Gas para respirar.", answer: "Oxigeno" },
-                { id: 'X', question: "Contiene X: Número 6 (ordinal).", answer: "Sexto" },
-                { id: 'X', question: "Contiene X: Escrito para leer.", answer: "Texto" }
+                { id: 'X', question: "Instrumento musical de percusión con láminas de madera.", answer: "Xilofono" },
+                { id: 'X', question: "Miedo a los extranjeros.", answer: "Xenofobia" },
+                { id: 'X', question: "Contiene X: Gas necesario para respirar.", answer: "Oxigeno" },
+                { id: 'X', question: "Contiene X: Que es de fuera del país.", answer: "Extranjero" },
+                { id: 'X', question: "Contiene X: Planeta o cuerpo celeste fuera del sistema solar.", answer: "Exoplaneta" },
+                { id: 'X', question: "Contiene X: Sexto día de la semana... ah no. X: Sexto.", answer: "Sexto" },
+                { id: 'X', question: "Contiene X: Explicación o comentario de un texto.", answer: "Exegesis" }
             ],
             Y: [
-                { id: 'Y', question: "Hembra caballo.", answer: "Yegua" },
-                { id: 'Y', question: "Material obra.", answer: "Yeso" },
-                { id: 'Y', question: "Monasterio Carlos V.", answer: "Yuste" },
-                { id: 'Y', question: "Parte amarilla huevo.", answer: "Yema" },
-                { id: 'Y', question: "Embarcación de lujo.", answer: "Yate" },
-                { id: 'Y', question: "Persona que hace Yoga.", answer: "Yogui" },
-                { id: 'Y', question: "Comida láctea (Danone).", answer: "Yogur" },
-                { id: 'Y', question: "Herramienta del herrero.", answer: "Yunque" },
-                { id: 'Y', question: "Animal parecido a la vaca (Himalaya).", answer: "Yak" },
-                { id: 'Y', question: "Contrario de Tú.", answer: "Yo" }
+                { id: 'Y', question: "Hembra del caballo.", answer: "Yegua" },
+                { id: 'Y', question: "Parte amarilla del huevo.", answer: "Yema" },
+                { id: 'Y', question: "Deporte o disciplina física y mental de la India.", answer: "Yoga" },
+                { id: 'Y', question: "Embarcación de recreo de lujo.", answer: "Yate" },
+                { id: 'Y', question: "Bloque de hierro usado por los herreros.", answer: "Yunque" },
+                { id: 'Y', question: "Contiene Y: Título de soberano en algunos países (Re...).", answer: "Rey" },
+                { id: 'Y', question: "Contiene Y: Mamífero cánido salvaje (parecido al lobo).", answer: "Coyote" }
             ],
             Z: [
-                { id: 'Z', question: "Hortaliza naranja.", answer: "Zanahoria" },
-                { id: 'Z', question: "Pintor extremeño.", answer: "Zurbaran" },
-                { id: 'Z', question: "Animal astuto.", answer: "Zorro" },
-                { id: 'Z', question: "Calzado.", answer: "Zapato" },
-                { id: 'Z', question: "Lugar con animales.", answer: "Zoo" },
-                { id: 'Z', question: "Jugo de frutas.", answer: "Zumo" },
-                { id: 'Z', question: "Baile y ejercicio.", answer: "Zumba" },
-                { id: 'Z', question: "Mala hierba con espinas.", answer: "Zarza" },
-                { id: 'Z', question: "Letra final.", answer: "Zeta" },
-                { id: 'Z', question: "Área delimitada.", answer: "Zona" }
+                { id: 'Z', question: "Ciencia que estudia los animales.", answer: "Zoologia" },
+                { id: 'Z', question: "Lugar donde se exhiben animales.", answer: "Zoo" },
+                { id: 'Z', question: "Baile popular español (y género musical).", answer: "Zarzuela" },
+                { id: 'Z', question: "Mamífero carnívoro astuto.", answer: "Zorro" },
+                { id: 'Z', question: "Calzado que no cubre el talón.", answer: "Zueco" },
+                { id: 'Z', question: "Mineral precioso de color azul... Zafiro.", answer: "Zafiro" },
+                { id: 'Z', question: "Zona climática templada.", answer: "Zona" }
             ]
         };
 
