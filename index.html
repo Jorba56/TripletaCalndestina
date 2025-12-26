@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rosco Extremadura & Cultura</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="game-container">
+        <div class="rosco-container">
+            <ul class="circle" id="circle">
+                </ul>
+            
+            <div class="center-panel">
+                <div id="welcome-screen">
+                    <h1>Rosco Quiz</h1>
+                    <p>Cultura General y Extremadura</p>
+                    <p>Récord Actual: <span id="high-score">0</span></p>
+                    <button id="start-btn" class="btn-start">Jugar</button>
+                </div>
+
+                <div id="game-screen" class="hidden">
+                    <div class="timer-box">⏳ <span id="timer">180</span>s</div>
+                    <h2 id="current-letter-display">A</h2>
+                    <p id="definition-text" class="definition">Definición...</p>
+                    
+                    <input type="text" id="user-answer" placeholder="Tu respuesta..." autocomplete="off">
+                    
+                    <div class="controls">
+                        <button id="pasapalabra-btn" class="btn-pasa">Pasapalabra</button>
+                        <button id="check-btn" class="btn-check">Enviar</button>
+                    </div>
+                </div>
+
+                <div id="end-screen" class="hidden">
+                    <h2>¡Tiempo Agotado!</h2>
+                    <p>Aciertos: <span id="score-correct">0</span></p>
+                    <p>Fallos: <span id="score-wrong">0</span></p>
+                    <button id="new-game-btn" class="btn-start">Nuevo Rosco</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
