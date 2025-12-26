@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gran Rosco & Lógica</title>
+    <title>Gran Rosco & Lógica Final</title>
     <style>
         /* =========================================
            RESET Y BASE
            ========================================= */
         * {
             box-sizing: border-box;
-            touch-action: manipulation; /* Evitar zoom doble toque */
+            touch-action: manipulation;
         }
 
         body {
@@ -22,7 +22,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            overflow: hidden; /* Evitar scroll durante el juego */
+            overflow: hidden; 
         }
 
         /* =========================================
@@ -90,7 +90,7 @@
         .letter-item.wrong { background: #dc3545; border-color: #a71d2a; }
 
         .center-panel {
-            position: relative; width: 300px; height: 300px; text-align: center; z-index: 20;
+            position: relative; width: 320px; height: 320px; text-align: center; z-index: 20;
             background: rgba(11, 29, 56, 0.95); padding: 15px; border-radius: 50%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
@@ -115,6 +115,24 @@
         .btn-pasa { background: #6c757d; color: white; }
         .btn-check { background: #28a745; color: white; }
         .timer-box { font-size: 1.4rem; font-weight: bold; color: #ffcc00; margin-bottom: 5px; }
+
+        /* Estilos Pantalla Resumen Rosco */
+        #end-screen { width: 90%; height: 90%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .summary-box {
+            width: 100%;
+            max-height: 150px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px 0;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+        .summary-item { border-bottom: 1px solid rgba(255,255,255,0.2); padding: 5px 0; }
+        .sum-correct { color: #4ade80; font-weight: bold; }
+        .sum-wrong { color: #f87171; font-weight: bold; }
+        .sum-pending { color: #fbbf24; font-weight: bold; }
 
         /* =========================================
            JUEGO 2: EL 1% (LÓGICA)
@@ -215,12 +233,16 @@
                 </div>
 
                 <div id="end-screen" class="hidden">
-                    <h2 style="color: #ffcc00;">¡FIN DEL JUEGO!</h2>
-                    <div style="display: flex; justify-content: space-around; width: 100%; margin: 20px 0; font-size: 1.2rem;">
-                        <p style="color: #28a745;">✅ <span id="score-correct">0</span></p>
-                        <p style="color: #dc3545;">❌ <span id="score-wrong">0</span></p>
+                    <h3 style="color: #ffcc00; margin: 5px;">¡FIN DEL JUEGO!</h3>
+                    <div style="display: flex; justify-content: space-around; width: 100%; margin: 5px 0; font-size: 1.1rem;">
+                        <p style="color: #4ade80;">✅ <span id="score-correct">0</span></p>
+                        <p style="color: #f87171;">❌ <span id="score-wrong">0</span></p>
                     </div>
-                    <button id="new-game-btn" class="btn-start">Jugar de nuevo</button>
+                    
+                    <div class="summary-box" id="rosco-summary">
+                        </div>
+
+                    <button id="new-game-btn" class="btn-start" style="font-size: 1rem; padding: 8px;">Jugar de nuevo</button>
                 </div>
             </div>
         </div>
@@ -254,7 +276,7 @@
 
     <script>
         // ==========================================
-        // 1. GESTIÓN DE PANTALLAS (SIN LOGIN)
+        // 1. GESTIÓN DE PANTALLAS
         // ==========================================
 
         const mainMenu = document.getElementById('main-menu');
@@ -280,7 +302,7 @@
         }
 
         // ==========================================
-        // 2. JUEGO: EL 1% (LÓGICA)
+        // 2. JUEGO: EL 1% (LÓGICA - AMPLIADO)
         // ==========================================
         const riddlesPool = [
             { question: "J + A = 61\nS + O = 61\nM + A = 61\n\nEntonces...\nF + M = ¿?\n(Piensa en calendarios)", answers: ["59", "cincuenta y nueve"], explanation: "Iniciales de los meses + días.\nF (Febrero 28) + M (Marzo 31) = 59." },
@@ -311,7 +333,22 @@
             { question: "De 10 ovejas, se mueren todas menos 9.\n¿Cuántas quedan?", answers: ["9", "nueve"], explanation: "Las 9 vivas." },
             { question: "Solo un ojo pero no ve.", answers: ["aguja", "una aguja"], explanation: "La aguja." },
             { question: "Sostienes en mano derecha, nunca en la izquierda.", answers: ["codo izquierdo", "mano izquierda"], explanation: "Tu mano/codo izquierdo." },
-            { question: "¿Qué mes tiene 28 días?", answers: ["todos", "12"], explanation: "Todos los meses." }
+            { question: "¿Qué mes tiene 28 días?", answers: ["todos", "12"], explanation: "Todos los meses." },
+            // NUEVOS ACERTIJOS AÑADIDOS
+            { question: "Es tuyo, pero todos lo usan más que tú.", answers: ["nombre", "tu nombre"], explanation: "Tu nombre." },
+            { question: "París empieza por P y termina por T. ¿Cierto o Falso?", answers: ["cierto", "verdad", "si"], explanation: "La palabra 'París' empieza por P. La palabra 'Termina' empieza por T." },
+            { question: "¿Qué animal anda con 4 patas por la mañana, 2 al mediodía y 3 por la noche?", answers: ["hombre", "ser humano", "humano"], explanation: "El ser humano (gatea de bebé, camina de adulto, usa bastón de viejo)." },
+            { question: "Tengo agujas pero no sé coser. Tengo números pero no sé leer.", answers: ["reloj", "el reloj"], explanation: "El reloj." },
+            { question: "Si me nombras, desaparezco. ¿Qué soy?", answers: ["silencio", "el silencio"], explanation: "El silencio." },
+            { question: "¿Qué sube pero nunca baja?", answers: ["edad", "la edad", "altura"], explanation: "La edad." },
+            { question: "Entro duro y grande, y salgo blando y pequeño. ¿Qué soy?", answers: ["chicle", "un chicle"], explanation: "Un chicle." },
+            { question: "Tiene dientes pero no muerde.", answers: ["peine", "ajo", "cremallera"], explanation: "Un peine o un ajo." },
+            { question: "Hijo de mi padre y de mi madre, y no es mi hermano.", answers: ["yo", "soy yo"], explanation: "Soy yo." },
+            { question: "¿Qué pesa más, un kilo de hierro o un kilo de paja?", answers: ["igual", "lo mismo", "pesan igual"], explanation: "Pesan lo mismo: un kilo." },
+            { question: "Un gallo pone un huevo en la cima de un tejado. ¿Hacia dónde cae?", answers: ["ningun sitio", "no ponen huevos", "gallos no ponen huevos"], explanation: "Los gallos no ponen huevos." },
+            { question: "Dos padres y dos hijos en un coche. Solo van 3 personas. ¿Cómo?", answers: ["abuelo", "abuelo padre hijo"], explanation: "Son: Abuelo, Padre e Hijo (El padre es hijo del abuelo)." },
+            { question: "¿Qué se rompe si lo tiras al suelo, pero no si lo tiras al agua?", answers: ["papel", "un papel"], explanation: "El papel (flota o se moja, pero no se rompe por el golpe)." },
+            { question: "Siempre estoy en medio del MAR.", answers: ["a", "letra a"], explanation: "La letra A." }
         ];
 
         let currentRiddleIndex = 0;
@@ -820,8 +857,42 @@
             clearInterval(timer);
             gameScreen.classList.add('hidden');
             endScreen.classList.remove('hidden');
+            
+            // Mostrar Puntuación Numérica
             document.getElementById('score-correct').innerText = score;
             document.getElementById('score-wrong').innerText = errors;
+            
+            // GENERAR RESUMEN DETALLADO
+            const summaryContainer = document.getElementById('rosco-summary');
+            summaryContainer.innerHTML = ''; // Limpiar anterior
+
+            currentQuestions.forEach(item => {
+                const div = document.createElement('div');
+                div.classList.add('summary-item');
+                
+                let icon = '';
+                let statusClass = '';
+                
+                if (item.status === 'correct') {
+                    icon = '✅';
+                    statusClass = 'sum-correct';
+                } else if (item.status === 'wrong') {
+                    icon = '❌';
+                    statusClass = 'sum-wrong';
+                } else {
+                    icon = '⏳ (Pasada/Tiempo)';
+                    statusClass = 'sum-pending';
+                }
+
+                div.innerHTML = `
+                    <span class="${statusClass}">${item.id} ${icon}</span> 
+                    <strong>${item.answer}</strong><br>
+                    <small style="color:#aaa;">${item.question}</small>
+                `;
+                summaryContainer.appendChild(div);
+            });
+
+            // Guardar Récord
             const currentRecord = localStorage.getItem('roscoRecord') || 0;
             if (score > currentRecord) {
                 localStorage.setItem('roscoRecord', score);
