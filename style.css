@@ -1,0 +1,120 @@
+body {
+    background-color: #0b1d38;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+
+.game-container {
+    position: relative;
+    width: 600px;
+    height: 600px;
+}
+
+.rosco-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.circle {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg); /* Empezar arriba */
+}
+
+.letter-item {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px; /* Centrar */
+    background: linear-gradient(145deg, #2b5cb3, #0033a0);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    font-weight: bold;
+    border: 2px solid white;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    transform: rotate(90deg); /* Corregir rotación del texto */
+    transition: all 0.3s;
+}
+
+/* Estados de las letras */
+.letter-item.active {
+    background: #ffcc00; /* Amarillo actual */
+    color: #000;
+    transform: scale(1.3) rotate(90deg);
+    z-index: 10;
+    border-color: #000;
+}
+
+.letter-item.correct { background: #28a745; border-color: #1e7e34; }
+.letter-item.wrong { background: #dc3545; border-color: #a71d2a; }
+
+.center-panel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    text-align: center;
+    z-index: 5;
+}
+
+.hidden { display: none; }
+
+h1 { color: #ffcc00; text-shadow: 2px 2px #000; }
+.definition { font-size: 1.1rem; min-height: 80px; margin-bottom: 20px; line-height: 1.4; }
+#current-letter-display { font-size: 3rem; margin: 10px 0; color: #ffcc00; }
+
+input {
+    padding: 10px;
+    font-size: 1.2rem;
+    width: 80%;
+    border-radius: 20px;
+    border: none;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.controls button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 20px;
+    margin: 5px;
+    font-weight: bold;
+}
+
+.btn-start { background: #ffcc00; color: #000; width: 100%; font-size: 1.2rem; }
+.btn-pasa { background: #6c757d; color: white; }
+.btn-check { background: #28a745; color: white; }
+
+.timer-box {
+    font-size: 1.5rem;
+    background: rgba(0,0,0,0.5);
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 15px;
+    margin-bottom: 10px;
+}
+
+/* Responsive para móviles */
+@media (max-width: 600px) {
+    .game-container { width: 95vw; height: 95vw; }
+    .letter-item { width: 30px; height: 30px; line-height: 30px; font-size: 0.8rem; }
+    .center-panel { width: 80%; }
+    .definition { font-size: 0.9rem; }
+}
