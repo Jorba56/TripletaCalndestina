@@ -1,22 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rosco Extremadura & Cultura</title>
-    <title>Rosco & Lógica 1%</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Gran Rosco & Lógica</title>
+    <style>
+        /* =========================================
+           RESET Y BASE
+           ========================================= */
+        * {
+            box-sizing: border-box;
+            touch-action: manipulation; /* Evitar zoom doble toque */
+        }
+
+        body {
+            background-color: #0b1d38;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Evitar scroll durante el juego */
+        }
+
+        /* =========================================
+           UTILIDADES
+           ========================================= */
+        .hidden { display: none !important; }
+
+        /* =========================================
+           MENÚ PRINCIPAL
+           ========================================= */
+        #main-menu {
+            text-align: center; width: 90%; max-width: 500px; animation: fadeIn 0.5s;
+        }
+        
+        h1 { font-size: 2.5rem; color: #ffcc00; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+
+        .menu-buttons {
+            display: flex; gap: 20px; margin-top: 30px; justify-content: center; flex-wrap: wrap;
+        }
+        .menu-btn {
+            padding: 20px; font-size: 1.2rem; border: none; border-radius: 15px; cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column;
+            align-items: center; width: 150px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .menu-btn:active { transform: scale(0.95); }
+        .rosco-style { background: linear-gradient(145deg, #0033a0, #2b5cb3); color: white; border: 2px solid #ffcc00; }
+        .logic-style { background: linear-gradient(145deg, #111, #333); color: #00ffcc; border: 2px solid #00ffcc; }
+        .icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .record-info { margin-top: 30px; color: #aaa; font-size: 0.9rem; }
+
+        /* =========================================
+           CONTENEDOR JUEGO
+           ========================================= */
+        .game-container {
+            position: relative; width: 600px; height: 600px; 
+            display: flex; justify-content: center; align-items: center;
+        }
+        .back-btn {
+            position: fixed; top: 15px; left: 15px; background: rgba(0,0,0,0.6);
+            border: 1px solid white; color: white; padding: 8px 15px; cursor: pointer;
+            border-radius: 20px; z-index: 100; font-size: 0.9rem;
+        }
+
+        /* =========================================
+           JUEGO 1: ROSCO
+           ========================================= */
+        .rosco-container {
+            position: relative; width: 100%; height: 100%; 
+            display: flex; justify-content: center; align-items: center;
+        }
+        .circle {
+            list-style: none; padding: 0; margin: 0; position: absolute; 
+            width: 100%; height: 100%;
+        }
+        .letter-item {
+            position: absolute; left: 50%; top: 50%; width: 36px; height: 36px; margin: -18px;
+            background: linear-gradient(145deg, #2b5cb3, #0033a0); border-radius: 50%;
+            text-align: center; line-height: 36px; font-weight: bold; font-size: 14px;
+            border: 2px solid white; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); transition: all 0.3s;
+        }
+        .letter-item.active {
+            background: #ffcc00; color: #000; transform: scale(1.4); z-index: 10; border-color: #000; box-shadow: 0 0 15px #ffcc00;
+        }
+        .letter-item.correct { background: #28a745; border-color: #1e7e34; }
+        .letter-item.wrong { background: #dc3545; border-color: #a71d2a; }
+
+        .center-panel {
+            position: relative; width: 300px; height: 300px; text-align: center; z-index: 20;
+            background: rgba(11, 29, 56, 0.95); padding: 15px; border-radius: 50%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border: 2px solid #2b5cb3;
+        }
+        .definition { font-size: 1rem; min-height: 60px; margin-bottom: 10px; line-height: 1.3; padding: 0 10px; color: #eee; }
+        #current-letter-display { font-size: 3rem; margin: 0px 0 10px 0; color: #ffcc00; text-shadow: 2px 2px 0 #000; }
+        
+        .input-group { width: 100%; display: flex; justify-content: center; margin-bottom: 10px; }
+        input[type="text"] {
+            padding: 10px; font-size: 1.1rem; width: 80%; border-radius: 20px;
+            border: 2px solid #ccc; text-align: center; outline: none;
+            color: #333;
+        }
+        .controls button {
+            padding: 10px 20px; font-size: 1rem; border: none; border-radius: 20px;
+            margin: 5px; font-weight: bold; width: 100px; cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .controls button:active { transform: scale(0.95); }
+        .btn-start { background: #ffcc00; color: #000; width: 100% !important; margin-top: 10px; font-size: 1.2rem; cursor: pointer; padding: 10px; border: none; border-radius: 20px; font-weight: bold;}
+        .btn-pasa { background: #6c757d; color: white; }
+        .btn-check { background: #28a745; color: white; }
+        .timer-box { font-size: 1.4rem; font-weight: bold; color: #ffcc00; margin-bottom: 5px; }
+
+        /* =========================================
+           JUEGO 2: EL 1% (LÓGICA)
+           ========================================= */
+        .logic-container {
+            width: 100%; height: 100%; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center; padding: 20px;
+        }
+        .logic-title { color: #00ffcc; text-transform: uppercase; letter-spacing: 2px; font-size: 1.5rem; margin-bottom: 20px; }
+        .logic-card {
+            background: #111; border: 2px solid #00ffcc; border-radius: 15px; padding: 20px;
+            width: 100%; max-width: 400px; box-shadow: 0 0 20px rgba(0, 255, 204, 0.2); margin-bottom: 20px;
+        }
+        #riddle-question { font-size: 1.1rem; line-height: 1.5; white-space: pre-line; margin-bottom: 20px; }
+        .logic-controls { width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .btn-logic { background: #00ffcc; color: #000; width: 100%; padding: 12px; font-weight: bold; border-radius: 20px; border:none; cursor: pointer; font-size: 1.1rem;}
+        .btn-giveup { background: transparent; border: 1px solid #555; color: #aaa; width: 100%; padding: 10px; margin-top: 5px; border-radius: 20px; cursor: pointer;}
+
+        /* --- MODAL FEEDBACK --- */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center;
+            z-index: 2000; animation: fadeIn 0.3s;
+        }
+        .modal-content {
+            background: #111; border: 2px solid #00ffcc; padding: 30px; border-radius: 15px;
+            text-align: center; max-width: 90%; width: 400px; box-shadow: 0 0 30px rgba(0, 255, 204, 0.3);
+        }
+        #modal-title { font-size: 2rem; margin: 0 0 15px 0; text-transform: uppercase; }
+        .title-correct { color: #28a745; text-shadow: 0 0 10px #28a745; }
+        .title-wrong { color: #ff4444; text-shadow: 0 0 10px #ff4444; }
+        #modal-solution { font-size: 1.2rem; color: #fff; font-weight: bold; margin-bottom: 10px; }
+        #modal-explanation { font-size: 1rem; color: #ccc; line-height: 1.5; margin-bottom: 25px; font-style: italic; }
+        #next-riddle-btn {
+            background: #00ffcc; color: #000; border: none; padding: 12px 25px;
+            font-size: 1.1rem; font-weight: bold; border-radius: 25px; cursor: pointer; transition: transform 0.2s;
+        }
+        #next-riddle-btn:hover { transform: scale(1.05); box-shadow: 0 0 15px #00ffcc; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* =========================================
+           MEDIA QUERIES (MÓVIL)
+           ========================================= */
+        @media (max-width: 650px) {
+            .game-container { width: 100vw; height: 100vh; }
+            /* Ajuste crítico para que el rosco se vea en móviles */
+            .rosco-container { transform: scale(0.60); transform-origin: center center; } 
+            .center-panel { width: 320px; height: 320px; }
+            #main-menu { margin-top: -50px; }
+        }
+        @media (max-width: 380px) {
+            .rosco-container { transform: scale(0.50); }
+        }
+    </style>
 </head>
 <body>
 
-    <div class="game-container">
-    <div id="login-screen">
-        <h2>🔒 Acceso Privado</h2>
-        <input type="password" id="password-input" placeholder="Contraseña..." autocomplete="off">
-        <button id="login-btn">Entrar</button>
-        <p id="login-error">Contraseña incorrecta</p>
-    </div>
-
-    <div id="main-menu" class="hidden">
-        <h1>Selecciona el Reto</h1>
+    <div id="main-menu">
+        <h1>🏆 GRAN CONCURSO</h1>
+        <p style="color: #ccc;">Edición Especial</p>
         <div class="menu-buttons">
             <button id="btn-mode-rosco" class="menu-btn rosco-style">
                 <span class="icon">🔵</span> El Rosco
@@ -31,35 +190,37 @@
     <div id="rosco-game" class="game-container hidden">
         <button class="back-btn" onclick="goToMenu()">⬅ Menú</button>
         <div class="rosco-container">
-            <ul class="circle" id="circle">
-                </ul>
             <ul class="circle" id="circle"></ul>
 
             <div class="center-panel">
                 <div id="welcome-screen">
-                    <h1>Rosco Quiz</h1>
-                    <p>Cultura General y Extremadura</p>
-                    <p>Récord Actual: <span id="high-score">0</span></p>
-                    <p>Cultura y Extremadura</p>
-                    <button id="start-btn" class="btn-start">Jugar</button>
+                    <h2 style="color: #ffcc00; margin-bottom: 10px;">Rosco Quiz</h2>
+                    <p style="margin-bottom: 20px;">Cultura y Extremadura</p>
+                    <button id="start-btn" class="btn-start">¡EMPEZAR!</button>
                 </div>
 
                 <div id="game-screen" class="hidden">
                     <div class="timer-box">⏳ <span id="timer">180</span>s</div>
                     <h2 id="current-letter-display">A</h2>
-                    <p id="definition-text" class="definition">Definición...</p>
+                    <p id="definition-text" class="definition">Cargando...</p>
                     
-                    <input type="text" id="user-answer" placeholder="Tu respuesta..." autocomplete="off">
+                    <div class="input-group">
+                        <input type="text" id="user-answer" placeholder="Respuesta..." autocomplete="off">
+                    </div>
                     
                     <div class="controls">
                         <button id="pasapalabra-btn" class="btn-pasa">Pasapalabra</button>
                         <button id="check-btn" class="btn-check">Enviar</button>
-@@ -38,12 +55,31 @@ <h2 id="current-letter-display">A</h2>
-                    <h2>¡Tiempo Agotado!</h2>
-                    <p>Aciertos: <span id="score-correct">0</span></p>
-                    <p>Fallos: <span id="score-wrong">0</span></p>
-                    <button id="new-game-btn" class="btn-start">Nuevo Rosco</button>
-                    <button id="new-game-btn" class="btn-start">Siguiente Rosco</button>
+                    </div>
+                </div>
+
+                <div id="end-screen" class="hidden">
+                    <h2 style="color: #ffcc00;">¡FIN DEL JUEGO!</h2>
+                    <div style="display: flex; justify-content: space-around; width: 100%; margin: 20px 0; font-size: 1.2rem;">
+                        <p style="color: #28a745;">✅ <span id="score-correct">0</span></p>
+                        <p style="color: #dc3545;">❌ <span id="score-wrong">0</span></p>
+                    </div>
+                    <button id="new-game-btn" class="btn-start">Jugar de nuevo</button>
                 </div>
             </div>
         </div>
@@ -71,19 +232,602 @@
             <h2 class="logic-title">Pregunta del 1%</h2>
             
             <div id="logic-card" class="logic-card">
-                <p id="riddle-question">Pregunta...</p>
-                <div id="riddle-image-container"></div> </div>
-
-            <div class="logic-controls">
-                <input type="text" id="riddle-answer" placeholder="Respuesta lógica..." autocomplete="off">
-                <button id="riddle-check-btn" class="btn-logic">Comprobar</button>
-                <button id="riddle-giveup-btn" class="btn-giveup">Ver Solución</button>
+                <p id="riddle-question">Cargando...</p>
             </div>
 
-            <p id="logic-feedback" class="hidden"></p>
+            <div class="logic-controls">
+                <input type="text" id="riddle-answer" placeholder="Respuesta lógica..." autocomplete="off" style="width: 100%; margin-bottom: 10px; background: #fff; color: #000;">
+                <button id="riddle-check-btn" class="btn-logic">Comprobar</button>
+                <button id="riddle-giveup-btn" class="btn-giveup">Me rindo (Ver solución)</button>
+            </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <div id="feedback-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="modal-title">TITULO</h2>
+            <p id="modal-solution"></p>
+            <p id="modal-explanation"></p>
+            <button id="next-riddle-btn">Siguiente ➡</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. GESTIÓN DE PANTALLAS (SIN LOGIN)
+        // ==========================================
+
+        const mainMenu = document.getElementById('main-menu');
+        const roscoGame = document.getElementById('rosco-game');
+        const riddleGame = document.getElementById('riddle-game');
+
+        // Navegación
+        document.getElementById('btn-mode-rosco').addEventListener('click', () => {
+            mainMenu.classList.add('hidden');
+            roscoGame.classList.remove('hidden');
+        });
+
+        document.getElementById('btn-mode-logic').addEventListener('click', () => {
+            mainMenu.classList.add('hidden');
+            riddleGame.classList.remove('hidden');
+            loadRiddle(); 
+        });
+
+        window.goToMenu = function() {
+            roscoGame.classList.add('hidden');
+            riddleGame.classList.add('hidden');
+            mainMenu.classList.remove('hidden');
+        }
+
+        // ==========================================
+        // 2. JUEGO: EL 1% (LÓGICA)
+        // ==========================================
+        const riddlesPool = [
+            { question: "J + A = 61\nS + O = 61\nM + A = 61\n\nEntonces...\nF + M = ¿?\n(Piensa en calendarios)", answers: ["59", "cincuenta y nueve"], explanation: "Iniciales de los meses + días.\nF (Febrero 28) + M (Marzo 31) = 59." },
+            { question: "Secuencia lógica:\nU, D, T, C, C, S, S, O, ...\n¿Qué sigue?", answers: ["n", "nueve"], explanation: "Iniciales de los números: Uno, Dos, Tres... Sigue N (Nueve)." },
+            { question: "11 + 2 = 1\n9 + 5 = 2\n\n¿10 + 4 = ?", answers: ["2", "dos"], explanation: "Horas del reloj. 10 + 4 horas = Las 2." },
+            { question: "Divide 30 por 0.5 y suma 10.", answers: ["70", "setenta"], explanation: "30 / 0.5 = 60. + 10 = 70." },
+            { question: "¿Cuántos nueves hay del 1 al 100?", answers: ["20", "veinte"], explanation: "9, 19, 29... 90, 91... 99 (son dos). Total 20." },
+            { question: "Adelantas al segundo en una carrera.\n¿En qué puesto vas?", answers: ["segundo", "2", "2º"], explanation: "Ocupas su lugar, eres el segundo." },
+            { question: "Padre de Ana tiene 5 hijas: Nana, Nene, Nini, Nono...\n¿La quinta?", answers: ["ana"], explanation: "El padre de ANA." },
+            { question: "Tiene ciudades sin casas, ríos sin agua y montes sin árboles.", answers: ["mapa", "un mapa"], explanation: "Un mapa." },
+            { question: "Habitación oscura. Tienes vela, lámpara de gas y leña.\n¿Qué enciendes primero?", answers: ["cerilla", "la cerilla", "fuego"], explanation: "La cerilla." },
+            { question: "Hay que romperlo para usarlo.", answers: ["huevo", "un huevo"], explanation: "El huevo." },
+            { question: "Alto de joven, bajo de viejo. Brillo y lloro.", answers: ["vela", "una vela"], explanation: "Una vela." },
+            { question: "Se moja mientras seca.", answers: ["toalla", "una toalla"], explanation: "La toalla." },
+            { question: "Tiene llaves pero no abre puertas.", answers: ["teclado", "piano", "un teclado"], explanation: "Un teclado o un piano." },
+            { question: "Si lo compartes, deja de serlo.", answers: ["secreto", "un secreto"], explanation: "Un secreto." },
+            { question: "Si dices mi nombre, me rompo.", answers: ["silencio", "el silencio"], explanation: "El silencio." },
+            { question: "Conductor de bus. Bajan 3, suben 2... ¿Nombre del conductor?", answers: ["tu", "yo", "mi nombre"], explanation: "TÚ eres el conductor." },
+            { question: "Oso camina 1km Sur, 1km Este, 1km Norte. Vuelve al inicio.\n¿Color?", answers: ["blanco"], explanation: "Polo Norte. Oso polar." },
+            { question: "Más grande cuanto más le quitas.", answers: ["agujero", "hoyo"], explanation: "Un agujero." },
+            { question: "Tienes 5 manzanas, quitas 2.\n¿Cuántas tienes?", answers: ["2", "dos"], explanation: "Tienes las 2 que has quitado." },
+            { question: "Palabra mal escrita en todos los diccionarios.", answers: ["mal", "incorrectamente"], explanation: "La palabra 'incorrectamente'." },
+            { question: "Tren eléctrico al norte, viento al oeste.\n¿Hacia dónde va el humo?", answers: ["ninguno", "no tiene"], explanation: "Eléctrico = no humo." },
+            { question: "Hombre sin paraguas bajo lluvia no se moja el pelo.", answers: ["calvo"], explanation: "Es calvo." },
+            { question: "Tiene cuello pero no cabeza.", answers: ["botella", "camisa"], explanation: "Botella o camisa." },
+            { question: "Adelantas al último en una carrera.\n¿Puesto?", answers: ["imposible"], explanation: "No puedes adelantar al último (si vas detrás, tú eres el último)." },
+            { question: "Baja pero nunca sube.", answers: ["lluvia", "la lluvia"], explanation: "La lluvia." },
+            { question: "De 10 ovejas, se mueren todas menos 9.\n¿Cuántas quedan?", answers: ["9", "nueve"], explanation: "Las 9 vivas." },
+            { question: "Solo un ojo pero no ve.", answers: ["aguja", "una aguja"], explanation: "La aguja." },
+            { question: "Sostienes en mano derecha, nunca en la izquierda.", answers: ["codo izquierdo", "mano izquierda"], explanation: "Tu mano/codo izquierdo." },
+            { question: "¿Qué mes tiene 28 días?", answers: ["todos", "12"], explanation: "Todos los meses." }
+        ];
+
+        let currentRiddleIndex = 0;
+        shuffleArray(riddlesPool);
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        const modal = document.getElementById('feedback-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalSolution = document.getElementById('modal-solution');
+        const modalExplanation = document.getElementById('modal-explanation');
+        const nextRiddleBtn = document.getElementById('next-riddle-btn');
+
+        function loadRiddle() {
+            const riddle = riddlesPool[currentRiddleIndex];
+            document.getElementById('riddle-question').innerText = riddle.question;
+            document.getElementById('riddle-answer').value = '';
+        }
+
+        document.getElementById('riddle-check-btn').addEventListener('click', () => { checkRiddle(false); });
+        document.getElementById('riddle-giveup-btn').addEventListener('click', () => { checkRiddle(true); });
+        document.getElementById('riddle-answer').addEventListener('keypress', (e) => { if(e.key === 'Enter') checkRiddle(false); });
+        nextRiddleBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            nextRiddle();
+        });
+
+        function checkRiddle(giveUp) {
+            const userVal = normalizeString(document.getElementById('riddle-answer').value);
+            const riddle = riddlesPool[currentRiddleIndex];
+            const isCorrect = riddle.answers.some(ans => normalizeString(ans) === userVal);
+
+            if (giveUp) { showModal(false, true); } 
+            else if (isCorrect) { showModal(true, false); } 
+            else { showModal(false, false); }
+        }
+
+        function showModal(isCorrect, isGiveUp) {
+            const riddle = riddlesPool[currentRiddleIndex];
+            modal.classList.remove('hidden');
+
+            if (isCorrect) {
+                modalTitle.innerText = "¡CORRECTO! 🧠";
+                modalTitle.className = "title-correct";
+                modalSolution.innerText = ""; 
+            } else {
+                modalTitle.innerText = isGiveUp ? "Solución:" : "¡Incorrecto!";
+                modalTitle.className = "title-wrong";
+                modalSolution.innerText = `La respuesta era: "${riddle.answers[0]}"`;
+            }
+            modalExplanation.innerText = riddle.explanation;
+        }
+
+        function nextRiddle() {
+            currentRiddleIndex++;
+            if (currentRiddleIndex >= riddlesPool.length) {
+                currentRiddleIndex = 0;
+                shuffleArray(riddlesPool);
+                alert("¡Has completado todos los acertijos! Volvemos a empezar barajados.");
+            }
+            loadRiddle();
+        }
+
+
+        // ==========================================
+        // 3. JUEGO: ROSCO (MEGA BASE DE DATOS)
+        // ==========================================
+
+        const questionsPool = {
+            A: [
+                { id: 'A', question: "Cereal de granos blancos para paella.", answer: "Arroz" },
+                { id: 'A', question: "Conjunto palaciego en Granada.", answer: "Alhambra" },
+                { id: 'A', question: "Gran embalse entre Badajoz y Portugal.", answer: "Alqueva" },
+                { id: 'A', question: "Insecto que produce miel.", answer: "Abeja" },
+                { id: 'A', question: "Profesional que defiende a los acusados en un juicio.", answer: "Abogado" },
+                { id: 'A', question: "Líquido graso de la aceituna.", answer: "Aceite" },
+                { id: 'A', question: "Lugar donde aterrizan los aviones.", answer: "Aeropuerto" },
+                { id: 'A', question: "País cuya capital es Berlín.", answer: "Alemania" },
+                { id: 'A', question: "Elemento químico vital para respirar (en el aire).", answer: "Aire" },
+                { id: 'A', question: "Color del cielo despejado (en femenino: Agua...).", answer: "Azul" }
+            ],
+            B: [
+                { id: 'B', question: "Lugar donde se prestan libros.", answer: "Biblioteca" },
+                { id: 'B', question: "Monumento Natural en Malpartida (Los...).", answer: "Barruecos" },
+                { id: 'B', question: "Capital pacense con Alcazaba.", answer: "Badajoz" },
+                { id: 'B', question: "Mamífero marino gigante.", answer: "Ballena" },
+                { id: 'B', question: "Vehículo de dos ruedas sin motor.", answer: "Bicicleta" },
+                { id: 'B', question: "Gesto de cariño con los labios.", answer: "Beso" },
+                { id: 'B', question: "Recipiente para beber agua.", answer: "Botella" },
+                { id: 'B', question: "Prenda de tela que ondea en los países.", answer: "Bandera" },
+                { id: 'B', question: "Entidad donde guardamos el dinero.", answer: "Banco" },
+                { id: 'B', question: "Pelo que crece sobre el labio superior.", answer: "Bigote" }
+            ],
+            C: [
+                { id: 'C', question: "Árboles del Jerte.", answer: "Cerezos" },
+                { id: 'C', question: "Ciudad Patrimonio de la Humanidad extremeña.", answer: "Caceres" },
+                { id: 'C', question: "Techo semiesférico.", answer: "Cupula" },
+                { id: 'C', question: "Animal del desierto con joroba.", answer: "Camello" },
+                { id: 'C', question: "Animal que relincha.", answer: "Caballo" },
+                { id: 'C', question: "Parte superior del cuerpo humano.", answer: "Cabeza" },
+                { id: 'C', question: "Mueble para dormir.", answer: "Cama" },
+                { id: 'C', question: "Edificio fortificado de la Edad Media.", answer: "Castillo" },
+                { id: 'C', question: "Aparato para hacer fotos.", answer: "Camara" },
+                { id: 'C', question: "Reptil que lleva la casa a cuestas.", answer: "Caracol" },
+                { id: 'C', question: "Prenda de vestir para el torso con botones.", answer: "Camisa" }
+            ],
+            D: [
+                { id: 'D', question: "Zona seca y arenosa.", answer: "Desierto" },
+                { id: 'D', question: "Médico de la piel.", answer: "Dermatologo" },
+                { id: 'D', question: "Reptil extinto gigante.", answer: "Dinosaurio" },
+                { id: 'D', question: "Moneda de EEUU.", answer: "Dolar" },
+                { id: 'D', question: "Pieza cúbica para jugar al parchís.", answer: "Dado" },
+                { id: 'D', question: "Tenemos 5 en cada mano.", answer: "Dedo" },
+                { id: 'D', question: "Médico de los dientes.", answer: "Dentista" },
+                { id: 'D', question: "Piedra preciosa más dura.", answer: "Diamante" },
+                { id: 'D', question: "Día de la semana de descanso.", answer: "Domingo" },
+                { id: 'D', question: "Animal marino inteligente que salta.", answer: "Delfin" }
+            ],
+            E: [
+                { id: 'E', question: "Árbol de la dehesa (bellotas).", answer: "Encina" },
+                { id: 'E', question: "Nuestra Comunidad Autónoma.", answer: "Extremadura" },
+                { id: 'E', question: "Título de Carlos V.", answer: "Emperador" },
+                { id: 'E', question: "Animal grande con trompa.", answer: "Elefante" },
+                { id: 'E', question: "Objeto para verse reflejado.", answer: "Espejo" },
+                { id: 'E', question: "Lugar donde se juega al fútbol.", answer: "Estadio" },
+                { id: 'E', question: "Astro que brilla con luz propia.", answer: "Estrella" },
+                { id: 'E', question: "Mes frío, empieza el año.", answer: "Enero" },
+                { id: 'E', question: "Persona que escribe libros.", answer: "Escritor" },
+                { id: 'E', question: "País vecino al norte de Portugal (o sea nosotros).", answer: "España" }
+            ],
+            F: [
+                { id: 'F', question: "Tortilla de huevo.", answer: "Francesa" },
+                { id: 'F', question: "Movimiento de arte de Vostell.", answer: "Fluxus" },
+                { id: 'F', question: "Luz de la calle.", answer: "Farola" },
+                { id: 'F', question: "Contrario de calor.", answer: "Frio" },
+                { id: 'F', question: "Mes corto del año.", answer: "Febrero" },
+                { id: 'F', question: "Lugar donde se compran medicinas.", answer: "Farmacia" },
+                { id: 'F', question: "Día de celebración.", answer: "Fiesta" },
+                { id: 'F', question: "Vehículo grande para transportar mercancías.", answer: "Furgoneta" },
+                { id: 'F', question: "Fruta roja pequeña.", answer: "Frambuesa" }, 
+                { id: 'F', question: "Fruta roja con semillas por fuera.", answer: "Fresa" }
+            ],
+            G: [
+                { id: 'G', question: "Instrumento flamenco.", answer: "Guitarra" },
+                { id: 'G', question: "Ave que migra a Extremadura.", answer: "Grulla" },
+                { id: 'G', question: "Pueblo amurallado desalojado.", answer: "Granadilla" },
+                { id: 'G', question: "Combustible gaseoso.", answer: "Gas" },
+                { id: 'G', question: "Animal que maúlla.", answer: "Gato" },
+                { id: 'G', question: "Prenda para las manos.", answer: "Guante" },
+                { id: 'G', question: "Guerra civil española (bando contrario a nacional).", answer: "Gubernamental" }, 
+                { id: 'G', question: "Persona que come mucho.", answer: "Gloton" },
+                { id: 'G', question: "Batalla, conflicto armado.", answer: "Guerra" },
+                { id: 'G', question: "Arquitecto de la Sagrada Familia.", answer: "Gaudi" },
+                { id: 'G', question: "Monasterio y Virgen de Extremadura.", answer: "Guadalupe" }
+            ],
+            H: [
+                { id: 'H', question: "Agua sólida.", answer: "Hielo" },
+                { id: 'H', question: "Conquistador Cortés.", answer: "Hernan" },
+                { id: 'H', question: "Órgano que filtra sangre.", answer: "Higado" },
+                { id: 'H', question: "Alojamiento turístico.", answer: "Hotel" },
+                { id: 'H', question: "Alimento que ponen las gallinas.", answer: "Huevo" },
+                { id: 'H', question: "Lugar donde se cultivan verduras.", answer: "Huerto" },
+                { id: 'H', question: "Lo que sale del fuego.", answer: "Humo" },
+                { id: 'H', question: "Hueso del brazo (entre codo y hombro).", answer: "Humero" },
+                { id: 'H', question: "Mamífero que ríe mucho.", answer: "Hiena" },
+                { id: 'H', question: "Conjunto de la obra de la humanidad.", answer: "Historia" }
+            ],
+            I: [
+                { id: 'I', question: "Casa esquimal.", answer: "Iglu" },
+                { id: 'I', question: "Queso de los...", answer: "Ibores" },
+                { id: 'I', question: "Tierra rodeada de agua.", answer: "Isla" },
+                { id: 'I', question: "País de la bota.", answer: "Italia" },
+                { id: 'I', question: "Lugar de culto cristiano.", answer: "Iglesia" },
+                { id: 'I', question: "Estación del año fría.", answer: "Invierno" },
+                { id: 'I', question: "Aparato que atrae metales.", answer: "Iman" },
+                { id: 'I', question: "Contrario de par.", answer: "Impar" },
+                { id: 'I', question: "Idea imaginaria imposible.", answer: "Ilusion" },
+                { id: 'I', question: "Imperio sudamericano conquistado por Pizarro.", answer: "Inca" }
+            ],
+            J: [
+                { id: 'J', question: "Valle de las cerezas.", answer: "Jerte" },
+                { id: 'J', question: "Embutido de cerdo curado.", answer: "Jamon" },
+                { id: 'J', question: "Día de la semana.", answer: "Jueves" },
+                { id: 'J', question: "Mes del verano (con J).", answer: "Julio" },
+                { id: 'J', question: "Mes del verano (después de mayo).", answer: "Junio" },
+                { id: 'J', question: "Animal con cuello muy largo.", answer: "Jirafa" },
+                { id: 'J', question: "Persona que participa en un juego.", answer: "Jugador" },
+                { id: 'J', question: "Planeta más grande.", answer: "Jupiter" },
+                { id: 'J', question: "Soberano de un reino.", answer: "Jefe" },
+                { id: 'J', question: "Medicamento líquido dulce.", answer: "Jarabe" }
+            ],
+            L: [
+                { id: 'L', question: "Bebida blanca de vaca.", answer: "Leche" },
+                { id: 'L', question: "Capital de Portugal.", answer: "Lisboa" },
+                { id: 'L', question: "Pueblo minero de Cáceres.", answer: "Logrosan" },
+                { id: 'L', question: "Satélite terrestre.", answer: "Luna" },
+                { id: 'L', question: "Animal rey de la selva.", answer: "Leon" },
+                { id: 'L', question: "Objeto para leer.", answer: "Libro" },
+                { id: 'L', question: "Día de la semana.", answer: "Lunes" },
+                { id: 'L', question: "Instrumento para iluminar portátil.", answer: "Linterna" },
+                { id: 'L', question: "Envase metálico.", answer: "Lata" },
+                { id: 'L', question: "Legumbre típica (lentejas).", answer: "Lenteja" }
+            ],
+            M: [
+                { id: 'M', question: "Capital romana.", answer: "Merida" },
+                { id: 'M', question: "Parque Nacional extremeño.", answer: "Monfrague" },
+                { id: 'M', question: "Pueblo de Vostell.", answer: "Malpartida" },
+                { id: 'M', question: "Fruta prohibida.", answer: "Manzana" },
+                { id: 'M', question: "Insecto de alas coloridas.", answer: "Mariposa" },
+                { id: 'M', question: "Día de la semana.", answer: "Martes" }, 
+                { id: 'M', question: "Mes de la primavera.", answer: "Mayo" },
+                { id: 'M', question: "Persona que cura enfermos.", answer: "Medico" },
+                { id: 'M', question: "Vehículo de dos ruedas con motor.", answer: "Moto" },
+                { id: 'M', question: "Capital de España.", answer: "Madrid" }
+            ],
+            N: [
+                { id: 'N', question: "Libro de ficción.", answer: "Novela" },
+                { id: 'N', question: "Oscuridad, fin del día.", answer: "Noche" },
+                { id: 'N', question: "Fruta cítrica.", answer: "Naranja" },
+                { id: 'N', question: "Embarcación.", answer: "Nave" },
+                { id: 'N', question: "Precipitación blanca y fría.", answer: "Nieve" },
+                { id: 'N', question: "Color muy oscuro.", answer: "Negro" },
+                { id: 'N', question: "Parte del cuerpo para oler.", answer: "Nariz" },
+                { id: 'N', question: "Donde hacen los pájaros los huevos.", answer: "Nido" },
+                { id: 'N', question: "Contrario de todo.", answer: "Nada" },
+                { id: 'N', question: "Punto cardinal.", answer: "Norte" }
+            ],
+            Ñ: [
+                { id: 'Ñ', question: "Contiene Ñ: 365 días.", answer: "Año" },
+                { id: 'Ñ', question: "Contiene Ñ: Ave de Malpartida.", answer: "Cigueña" },
+                { id: 'Ñ', question: "Contiene Ñ: Estación caída hojas.", answer: "Otoño" },
+                { id: 'Ñ', question: "Contiene Ñ: Insecto de 8 patas.", answer: "Araña" },
+                { id: 'Ñ', question: "Contiene Ñ: Persona que construye casas.", answer: "Albañil" },
+                { id: 'Ñ', question: "Contiene Ñ: Fruta tropical amarilla.", answer: "Piña" },
+                { id: 'Ñ', question: "Contiene Ñ: Madera para quemar.", answer: "Leña" },
+                { id: 'Ñ', question: "Contiene Ñ: Parte de la mano cerrada.", answer: "Puño" },
+                { id: 'Ñ', question: "Contiene Ñ: Lo que tienes cuando quieres dormir.", answer: "Sueño" },
+                { id: 'Ñ', question: "Contiene Ñ: Tela para limpiarse la nariz.", answer: "Pañuelo" }
+            ],
+            O: [
+                { id: 'O', question: "Explorador del Amazonas.", answer: "Orellana" },
+                { id: 'O', question: "Metal amarillo.", answer: "Oro" },
+                { id: 'O', question: "Sentido de escuchar.", answer: "Oido" },
+                { id: 'O', question: "Animal que da lana.", answer: "Oveja" },
+                { id: 'O', question: "Mes del año.", answer: "Octubre" },
+                { id: 'O', question: "Animal grande que hiberna.", answer: "Oso" },
+                { id: 'O', question: "Órgano de la vista.", answer: "Ojo" },
+                { id: 'O', question: "Mar muy grande.", answer: "Oceano" },
+                { id: 'O', question: "Número que sigue al siete.", answer: "Ocho" },
+                { id: 'O', question: "Vegetal que hace llorar al picarlo.", answer: "Oregano" }
+            ],
+            P: [
+                { id: 'P', question: "Especia de la Vera.", answer: "Pimenton" },
+                { id: 'P', question: "Conquistador de Trujillo.", answer: "Pizarro" },
+                { id: 'P', question: "Ciudad del Jerte.", answer: "Plasencia" },
+                { id: 'P', question: "Mejor amigo del hombre.", answer: "Perro" },
+                { id: 'P', question: "Herramienta para cavar.", answer: "Pala" },
+                { id: 'P', question: "Fruta amarilla alargada.", answer: "Platano" },
+                { id: 'P', question: "Jefe de la iglesia católica.", answer: "Papa" },
+                { id: 'P', question: "Animal que vuela (genérico).", answer: "Pajaro" },
+                { id: 'P', question: "País vecino de España.", answer: "Portugal" },
+                { id: 'P', question: "Capital de Francia.", answer: "Paris" }
+            ],
+            Q: [
+                { id: 'Q', question: "Personaje de Cervantes.", answer: "Quijote" },
+                { id: 'Q', question: "Torta del Casar es un...", answer: "Queso" },
+                { id: 'Q', question: "Lugar de operaciones.", answer: "Quirofano" },
+                { id: 'Q', question: "Ciencia de laboratorio.", answer: "Quimica" },
+                { id: 'Q', question: "Número 15 (veinte menos cinco).", answer: "Quince" },
+                { id: 'Q', question: "Medio de transporte. Quiebravista? No. Q: Quitasol.", answer: "Quitasol" },
+                { id: 'Q', question: "Expresar dolor o pena.", answer: "Quejarse" },
+                { id: 'Q', question: "Hacer fuego.", answer: "Quemar" },
+                { id: 'Q', question: "Animal volador (mamífero) empieza por Q (Quiroptero).", answer: "Quiroptero" }
+            ],
+            R: [
+                { id: 'R', question: "Flor del amor.", answer: "Rosa" },
+                { id: 'R', question: "Capital italiana.", answer: "Roma" },
+                { id: 'R', question: "Color sangre.", answer: "Rojo" },
+                { id: 'R', question: "Roedor pequeño.", answer: "Raton" },
+                { id: 'R', question: "Corriente de agua.", answer: "Rio" },
+                { id: 'R', question: "Objeto que marca la hora.", answer: "Reloj" },
+                { id: 'R', question: "Monarca.", answer: "Rey" },
+                { id: 'R', question: "Sonido fuerte del cielo.", answer: "Rayo" },
+                { id: 'R', question: "País más grande del mundo.", answer: "Rusia" },
+                { id: 'R', question: "Anfibio verde que croa.", answer: "Rana" }
+            ],
+            S: [
+                { id: 'S', question: "Astro rey.", answer: "Sol" },
+                { id: 'S', question: "Comarca de embalses Badajoz.", answer: "Siberia" },
+                { id: 'S', question: "Día fin de semana.", answer: "Sabado" },
+                { id: 'S', question: "Reptil sin patas.", answer: "Serpiente" },
+                { id: 'S', question: "Líquido rojo del cuerpo.", answer: "Sangre" },
+                { id: 'S', question: "Mueble para sentarse.", answer: "Silla" },
+                { id: 'S', question: "Condimento salado.", answer: "Sal" },
+                { id: 'S', question: "Prenda para la cabeza.", answer: "Sombrero" },
+                { id: 'S', question: "Número después del seis.", answer: "Siete" },
+                { id: 'S', question: "Mes del año.", answer: "Septiembre" }
+            ],
+            T: [
+                { id: 'T', question: "Ciudad de Pizarro.", answer: "Trujillo" },
+                { id: 'T', question: "Transporte sobre raíles.", answer: "Tren" },
+                { id: 'T', question: "Río de Lisboa.", answer: "Tajo" },
+                { id: 'T', question: "Para ver estrellas.", answer: "Telescopio" },
+                { id: 'T', question: "Objeto para comer (con pinchos).", answer: "Tenedor" },
+                { id: 'T', question: "Animal felino rayado.", answer: "Tigre" },
+                { id: 'T', question: "Caja que emite imágenes.", answer: "Television" },
+                { id: 'T', question: "Vehículo con licencia.", answer: "Taxi" },
+                { id: 'T', question: "Infusión caliente.", answer: "Te" },
+                { id: 'T', question: "Planeta donde vivimos.", answer: "Tierra" }
+            ],
+            U: [
+                { id: 'U', question: "Fruta del vino.", answer: "Uva" },
+                { id: 'U', question: "Caballo con cuerno.", answer: "Unicornio" },
+                { id: 'U', question: "Espacio infinito.", answer: "Universo" },
+                { id: 'U', question: "Parte dura del dedo.", answer: "Uña" },
+                { id: 'U', question: "Número.", answer: "Uno" },
+                { id: 'U', question: "Ropa obligatoria en colegios.", answer: "Uniforme" },
+                { id: 'U', question: "Escritor vasco (Niebla).", answer: "Unamuno" },
+                { id: 'U', question: "País de América del Sur (Montevideo).", answer: "Uruguay" },
+                { id: 'U', question: "Recipiente para votar.", answer: "Urna" },
+                { id: 'U', question: "Herramienta de cocina para amasar.", answer: "Uslero" } 
+            ],
+            V: [
+                { id: 'V', question: "Museo de Malpartida.", answer: "Vostell" },
+                { id: 'V', question: "Estación calurosa.", answer: "Verano" },
+                { id: 'V', question: "Color esperanza.", answer: "Verde" },
+                { id: 'V', question: "Animal que da leche.", answer: "Vaca" },
+                { id: 'V', question: "Día de la semana.", answer: "Viernes" },
+                { id: 'V', question: "Líquido de la uva (alcohol).", answer: "Vino" },
+                { id: 'V', question: "Fenómeno del aire.", answer: "Viento" },
+                { id: 'V', question: "Objeto para poner flores.", answer: "Vasija" },
+                { id: 'V', question: "Lo contrario de mentira.", answer: "Verdad" },
+                { id: 'V', question: "Instrumento de cuerda.", answer: "Violin" }
+            ],
+            X: [
+                { id: 'X', question: "Contiene X: Prueba escolar.", answer: "Examen" },
+                { id: 'X', question: "Instrumento musical.", answer: "Xilofono" },
+                { id: 'X', question: "Gas noble.", answer: "Xenon" },
+                { id: 'X', question: "Contiene X: Ave de fuego.", answer: "Fenix" },
+                { id: 'X', question: "Contiene X: Vehículo de alquiler.", answer: "Taxi" },
+                { id: 'X', question: "Contiene X: Deporte de lucha.", answer: "Boxeo" },
+                { id: 'X', question: "Contiene X: Conjunto de estrellas.", answer: "Galaxia" },
+                { id: 'X', question: "Contiene X: Gas para respirar.", answer: "Oxigeno" },
+                { id: 'X', question: "Contiene X: Número 6 (ordinal).", answer: "Sexto" },
+                { id: 'X', question: "Contiene X: Escrito para leer.", answer: "Texto" }
+            ],
+            Y: [
+                { id: 'Y', question: "Hembra caballo.", answer: "Yegua" },
+                { id: 'Y', question: "Material obra.", answer: "Yeso" },
+                { id: 'Y', question: "Monasterio Carlos V.", answer: "Yuste" },
+                { id: 'Y', question: "Parte amarilla huevo.", answer: "Yema" },
+                { id: 'Y', question: "Embarcación de lujo.", answer: "Yate" },
+                { id: 'Y', question: "Persona que hace Yoga.", answer: "Yogui" },
+                { id: 'Y', question: "Comida láctea (Danone).", answer: "Yogur" },
+                { id: 'Y', question: "Herramienta del herrero.", answer: "Yunque" },
+                { id: 'Y', question: "Animal parecido a la vaca (Himalaya).", answer: "Yak" },
+                { id: 'Y', question: "Contrario de Tú.", answer: "Yo" }
+            ],
+            Z: [
+                { id: 'Z', question: "Hortaliza naranja.", answer: "Zanahoria" },
+                { id: 'Z', question: "Pintor extremeño.", answer: "Zurbaran" },
+                { id: 'Z', question: "Animal astuto.", answer: "Zorro" },
+                { id: 'Z', question: "Calzado.", answer: "Zapato" },
+                { id: 'Z', question: "Lugar con animales.", answer: "Zoo" },
+                { id: 'Z', question: "Jugo de frutas.", answer: "Zumo" },
+                { id: 'Z', question: "Baile y ejercicio.", answer: "Zumba" },
+                { id: 'Z', question: "Mala hierba con espinas.", answer: "Zarza" },
+                { id: 'Z', question: "Letra final.", answer: "Zeta" },
+                { id: 'Z', question: "Área delimitada.", answer: "Zona" }
+            ]
+        };
+
+        // --- LOGICA ROSCO ---
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let errors = 0;
+        let timer;
+        let timeLeft = 180;
+
+        const circle = document.getElementById('circle');
+        const definitionText = document.getElementById('definition-text');
+        const currentLetterDisplay = document.getElementById('current-letter-display');
+        const inputAnswer = document.getElementById('user-answer');
+        const timerDisplay = document.getElementById('timer');
+        const scoreDisplay = document.getElementById('menu-record');
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const endScreen = document.getElementById('end-screen');
+
+        if (scoreDisplay) scoreDisplay.innerText = localStorage.getItem('roscoRecord') || 0;
+
+        document.getElementById('start-btn').addEventListener('click', startRoscoGame);
+        document.getElementById('new-game-btn').addEventListener('click', startRoscoGame);
+        document.getElementById('check-btn').addEventListener('click', checkRoscoAnswer);
+        document.getElementById('pasapalabra-btn').addEventListener('click', doPasapalabra);
+
+        inputAnswer.addEventListener('keypress', function (e) { if (e.key === 'Enter') checkRoscoAnswer(); });
+
+        function generateRosco() {
+            const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "L", "M", "N", "Ñ", "O", "P", "Q", "R", "S", "T", "U", "V", "X", "Y", "Z"];
+            const newRosco = [];
+            letters.forEach(letter => {
+                const options = questionsPool[letter];
+                if(options) {
+                    const randomQuestion = options[Math.floor(Math.random() * options.length)];
+                    newRosco.push({ id: randomQuestion.id, question: randomQuestion.question, answer: randomQuestion.answer, status: null });
+                }
+            });
+            return newRosco;
+        }
+
+        function startRoscoGame() {
+            currentQuestions = generateRosco();
+            currentIndex = 0; score = 0; errors = 0; timeLeft = 180;
+            
+            welcomeScreen.classList.add('hidden');
+            endScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            
+            inputAnswer.value = ''; 
+            inputAnswer.focus();
+            renderCircle(); loadQuestion(); startTimer();
+        }
+
+        function renderCircle() {
+            circle.innerHTML = '';
+            const total = currentQuestions.length;
+            const radius = 250; 
+            currentQuestions.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.classList.add('letter-item'); li.id = `letter-${index}`; li.innerText = item.id;
+                const angle = (360 / total) * index;
+                const radian = angle * (Math.PI / 180);
+                const x = radius * Math.cos(radian);
+                const y = radius * Math.sin(radian);
+                li.style.transform = `translate(${x}px, ${y}px) rotate(90deg)`; 
+                circle.appendChild(li);
+            });
+        }
+
+        function loadQuestion() {
+            if (currentIndex >= currentQuestions.length) {
+                const pendingIndex = currentQuestions.findIndex(q => q.status === null);
+                if (pendingIndex !== -1) currentIndex = pendingIndex; 
+                else { endRoscoGame(); return; }
+            }
+            if (currentQuestions[currentIndex].status !== null) {
+                let found = false;
+                for (let i = currentIndex; i < currentQuestions.length; i++) {
+                    if (currentQuestions[i].status === null) { currentIndex = i; found = true; break; }
+                }
+                if (!found) {
+                    for (let i = 0; i < currentQuestions.length; i++) {
+                        if (currentQuestions[i].status === null) { currentIndex = i; found = true; break; }
+                    }
+                }
+                if (!found) { endRoscoGame(); return; }
+            }
+            const currentQ = currentQuestions[currentIndex];
+            definitionText.innerText = currentQ.question;
+            currentLetterDisplay.innerText = currentQ.id;
+            document.querySelectorAll('.letter-item').forEach(l => l.classList.remove('active'));
+            document.getElementById(`letter-${currentIndex}`).classList.add('active');
+        }
+
+        function normalizeString(str) {
+            return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+        }
+
+        function checkRoscoAnswer() {
+            const userAnswer = normalizeString(inputAnswer.value);
+            const correctAnswer = normalizeString(currentQuestions[currentIndex].answer);
+            const letterElement = document.getElementById(`letter-${currentIndex}`);
+            if (userAnswer === correctAnswer) {
+                score++; currentQuestions[currentIndex].status = 'correct';
+                letterElement.classList.add('correct'); letterElement.classList.remove('active');
+            } else {
+                errors++; currentQuestions[currentIndex].status = 'wrong';
+                letterElement.classList.add('wrong'); letterElement.classList.remove('active');
+            }
+            inputAnswer.value = ''; currentIndex++; loadQuestion();
+        }
+
+        function doPasapalabra() {
+            inputAnswer.value = '';
+            document.getElementById(`letter-${currentIndex}`).classList.remove('active');
+            currentIndex++; loadQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--; 
+                timerDisplay.innerText = timeLeft;
+                if (timeLeft <= 0) endRoscoGame();
+            }, 1000);
+        }
+
+        function endRoscoGame() {
+            clearInterval(timer);
+            gameScreen.classList.add('hidden');
+            endScreen.classList.remove('hidden');
+            document.getElementById('score-correct').innerText = score;
+            document.getElementById('score-wrong').innerText = errors;
+            const currentRecord = localStorage.getItem('roscoRecord') || 0;
+            if (score > currentRecord) {
+                localStorage.setItem('roscoRecord', score);
+                scoreDisplay.innerText = score;
+            }
+        }
+    </script>
 </body>
 </html>
